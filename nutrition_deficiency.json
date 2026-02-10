@@ -1,0 +1,570 @@
+{
+  "Nitrogen_Deficiency": {
+    "name": "Nitrogen Deficiency",
+    "nutrient": "Nitrogen (N)",
+    "description": "Nitrogen deficiency causes yellowing of older leaves starting from the tips, stunted growth, and pale green to yellow color in plants.",
+    "visual_symptoms": [
+      "Yellowing of older leaves (chlorosis)",
+      "Stunted plant growth",
+      "Pale green to yellow color overall",
+      "Leaves turn light green first, then yellow",
+      "Reduced leaf size"
+    ],
+    "affected_crops": ["Tomato", "Corn", "Potato", "Apple", "Grape", "All plants"],
+    "severity_indicators": {
+      "mild": "Light green color in lower leaves",
+      "moderate": "Yellow lower leaves, reduced growth",
+      "severe": "Entire plant pale yellow, severe stunting"
+    },
+    "treatment": {
+      "immediate": [
+        "Apply nitrogen-rich fertilizer (Urea, Ammonium Sulfate)",
+        "Apply foliar spray with liquid nitrogen",
+        "Add compost or well-rotted manure"
+      ],
+      "long_term": [
+        "Incorporate organic matter before planting",
+        "Use green manure crops",
+        "Regular soil testing",
+        "Maintain proper fertilization schedule"
+      ]
+    },
+    "fertilizer": {
+      "chemical": {
+        "name": "Urea (46-0-0)",
+        "dosage_per_hectare": 150,
+        "unit": "kg",
+        "application_method": "Broadcast and incorporate or side-dress",
+        "timing": "Split application - 1/3 at planting, 1/3 at 30 days, 1/3 at 60 days",
+        "precautions": "Avoid over-application. Can cause leaf burn if applied to wet foliage."
+      },
+      "organic": {
+        "name": "Blood meal or Composted manure",
+        "dosage_per_hectare": 500,
+        "unit": "kg",
+        "application_method": "Incorporate into soil",
+        "timing": "Before planting and as side-dress",
+        "precautions": "Well-composted material preferred to avoid nitrogen tie-up."
+      }
+    },
+    "prevention": [
+      "Regular soil testing",
+      "Proper crop rotation with legumes",
+      "Mulching with organic matter",
+      "Avoid excessive irrigation that leaches nitrogen"
+    ]
+  },
+
+  "Phosphorus_Deficiency": {
+    "name": "Phosphorus Deficiency",
+    "nutrient": "Phosphorus (P)",
+    "description": "Phosphorus deficiency causes dark green or purplish discoloration of leaves, especially in cool weather, with stunted root development.",
+    "visual_symptoms": [
+      "Dark green or purple leaves",
+      "Purple coloring on leaf undersides and stems",
+      "Stunted growth",
+      "Delayed maturity",
+      "Poor root development",
+      "Reduced flowering and fruiting"
+    ],
+    "affected_crops": ["Tomato", "Corn", "Potato", "Soybean", "All plants"],
+    "severity_indicators": {
+      "mild": "Slight purpling on lower leaves",
+      "moderate": "Distinct purple coloration, reduced growth",
+      "severe": "Intense purple/brown leaves, severe stunting, poor yield"
+    },
+    "treatment": {
+      "immediate": [
+        "Apply phosphorus-rich fertilizer (DAP, SSP)",
+        "Use foliar spray with phosphoric acid solution",
+        "Add bone meal or rock phosphate"
+      ],
+      "long_term": [
+        "Adjust soil pH (6.0-7.0 optimal for P availability)",
+        "Incorporate rock phosphate before planting",
+        "Use mycorrhizal inoculants",
+        "Maintain adequate organic matter"
+      ]
+    },
+    "fertilizer": {
+      "chemical": {
+        "name": "DAP (Diammonium Phosphate 18-46-0)",
+        "dosage_per_hectare": 100,
+        "unit": "kg",
+        "application_method": "Band application near roots at planting",
+        "timing": "At planting or early growth stage",
+        "precautions": "Avoid direct seed contact. May cause ammonia toxicity if over-applied."
+      },
+      "organic": {
+        "name": "Rock Phosphate or Bone Meal",
+        "dosage_per_hectare": 300,
+        "unit": "kg",
+        "application_method": "Broadcast and incorporate deeply",
+        "timing": "Before planting (fall application preferred)",
+        "precautions": "Slow release - best applied season before planting."
+      }
+    },
+    "prevention": [
+      "Maintain soil pH between 6.0-7.0",
+      "Avoid excessive zinc or iron in soil",
+      "Reduce soil compaction",
+      "Use phosphorus-fixing bacteria"
+    ]
+  },
+
+  "Potassium_Deficiency": {
+    "name": "Potassium Deficiency",
+    "nutrient": "Potassium (K)",
+    "description": "Potassium deficiency causes yellowing and browning of leaf margins and tips, with weak stems and poor fruit quality.",
+    "visual_symptoms": [
+      "Yellowing of leaf edges (marginal chlorosis)",
+      "Browning and scorching of leaf tips and margins",
+      "Older leaves affected first",
+      "Weak, thin stems",
+      "Poor fruit development",
+      "Increased susceptibility to diseases"
+    ],
+    "affected_crops": ["Tomato", "Potato", "Grape", "Corn", "All plants"],
+    "severity_indicators": {
+      "mild": "Slight yellowing at leaf margins",
+      "moderate": "Brown scorching on edges, curling",
+      "severe": "Severe necrosis, leaf death, poor fruit quality"
+    },
+    "treatment": {
+      "immediate": [
+        "Apply potassium sulfate or muriate of potash",
+        "Use foliar spray with potassium nitrate",
+        "Add wood ash (organic source)"
+      ],
+      "long_term": [
+        "Regular potassium fertilization",
+        "Incorporate compost high in potassium",
+        "Avoid excessive calcium that blocks K uptake",
+        "Maintain proper soil moisture"
+      ]
+    },
+    "fertilizer": {
+      "chemical": {
+        "name": "Muriate of Potash (KCl 0-0-60)",
+        "dosage_per_hectare": 120,
+        "unit": "kg",
+        "application_method": "Broadcast or band application",
+        "timing": "Before planting and during fruit development",
+        "precautions": "High salt index - avoid excessive use on sensitive crops."
+      },
+      "organic": {
+        "name": "Wood ash or Greensand",
+        "dosage_per_hectare": 400,
+        "unit": "kg",
+        "application_method": "Broadcast and incorporate",
+        "timing": "Before planting and as side-dress",
+        "precautions": "Wood ash raises soil pH - monitor pH levels."
+      }
+    },
+    "prevention": [
+      "Regular soil testing for potassium levels",
+      "Avoid over-watering that leaches potassium",
+      "Balance calcium and magnesium with potassium",
+      "Mulch to conserve soil moisture and nutrients"
+    ]
+  },
+
+  "Magnesium_Deficiency": {
+    "name": "Magnesium Deficiency",
+    "nutrient": "Magnesium (Mg)",
+    "description": "Magnesium deficiency causes interveinal chlorosis (yellowing between leaf veins) in older leaves while veins remain green.",
+    "visual_symptoms": [
+      "Yellowing between leaf veins (interveinal chlorosis)",
+      "Veins remain green",
+      "Older leaves affected first",
+      "Red or purple tints may develop",
+      "Leaf edges may curl upward",
+      "Premature leaf drop"
+    ],
+    "affected_crops": ["Tomato", "Apple", "Grape", "Potato", "Corn"],
+    "severity_indicators": {
+      "mild": "Light interveinal yellowing on older leaves",
+      "moderate": "Distinct yellow patterns, some leaf curling",
+      "severe": "Severe yellowing, necrosis, defoliation"
+    },
+    "treatment": {
+      "immediate": [
+        "Apply Epsom salt (magnesium sulfate) as foliar spray",
+        "Side-dress with dolomitic limestone",
+        "Use magnesium nitrate solution"
+      ],
+      "long_term": [
+        "Incorporate dolomitic limestone at planting",
+        "Regular magnesium sulfate applications",
+        "Balance potassium levels (high K blocks Mg)",
+        "Maintain proper soil pH"
+      ]
+    },
+    "fertilizer": {
+      "chemical": {
+        "name": "Epsom Salt (Magnesium Sulfate)",
+        "dosage_per_hectare": 50,
+        "unit": "kg",
+        "application_method": "Foliar spray (2-3% solution) or soil application",
+        "timing": "During active growth, repeat every 2-3 weeks",
+        "precautions": "Do not apply in hot weather. Rinse equipment after use."
+      },
+      "organic": {
+        "name": "Dolomitic Limestone",
+        "dosage_per_hectare": 500,
+        "unit": "kg",
+        "application_method": "Broadcast and incorporate",
+        "timing": "Fall application before planting",
+        "precautions": "Slowly available - plan ahead. May raise soil pH."
+      }
+    },
+    "prevention": [
+      "Avoid excessive potassium fertilization",
+      "Maintain soil pH between 6.0-7.0",
+      "Use balanced fertilizers with magnesium",
+      "Add compost rich in magnesium"
+    ]
+  },
+
+  "Iron_Deficiency": {
+    "name": "Iron Deficiency (Chlorosis)",
+    "nutrient": "Iron (Fe)",
+    "description": "Iron deficiency causes interveinal chlorosis in young leaves, with severe yellowing while veins remain green.",
+    "visual_symptoms": [
+      "Yellowing of young leaves (new growth)",
+      "Interveinal chlorosis (veins stay green)",
+      "White or bleached appearance in severe cases",
+      "Stunted new growth",
+      "Reduced vigor"
+    ],
+    "affected_crops": ["Tomato", "Apple", "Grape", "Peach", "Blueberry"],
+    "severity_indicators": {
+      "mild": "Light yellowing of newest leaves",
+      "moderate": "Distinct yellow with green veins",
+      "severe": "White or bleached leaves, stunted growth"
+    },
+    "treatment": {
+      "immediate": [
+        "Apply chelated iron (Fe-EDTA or Fe-EDDHA) as foliar spray",
+        "Use ferrous sulfate soil drench",
+        "Lower soil pH if too alkaline"
+      ],
+      "long_term": [
+        "Maintain soil pH between 5.5-6.5",
+        "Incorporate sulfur to lower pH",
+        "Use acidifying fertilizers",
+        "Improve soil drainage",
+        "Add organic matter"
+      ]
+    },
+    "fertilizer": {
+      "chemical": {
+        "name": "Chelated Iron (Fe-EDDHA 6%)",
+        "dosage_per_hectare": 10,
+        "unit": "kg",
+        "application_method": "Foliar spray (0.5% solution) or soil drench",
+        "timing": "During active growth, repeat every 2-3 weeks",
+        "precautions": "Avoid mixing with phosphorus fertilizers. Use separate applications."
+      },
+      "organic": {
+        "name": "Iron Sulfate (Ferrous Sulfate)",
+        "dosage_per_hectare": 25,
+        "unit": "kg",
+        "application_method": "Soil application or foliar spray",
+        "timing": "Early spring and during growth",
+        "precautions": "Acidifies soil - monitor pH. May stain surfaces."
+      }
+    },
+    "prevention": [
+      "Maintain proper soil pH (acidic for iron availability)",
+      "Avoid over-watering and poor drainage",
+      "Reduce phosphorus in alkaline soils",
+      "Use iron-rich organic amendments"
+    ]
+  },
+
+  "Calcium_Deficiency": {
+    "name": "Calcium Deficiency",
+    "nutrient": "Calcium (Ca)",
+    "description": "Calcium deficiency causes tip burn, blossom end rot in fruits, and death of growing points.",
+    "visual_symptoms": [
+      "Death of terminal buds and young leaves",
+      "Tip burn on young leaves",
+      "Blossom end rot in tomatoes and peppers",
+      "Distorted new growth",
+      "Brown spots on fruits",
+      "Weak cell walls, soft tissues"
+    ],
+    "affected_crops": ["Tomato", "Pepper", "Apple", "Lettuce", "Cabbage"],
+    "severity_indicators": {
+      "mild": "Slight tip burn on young leaves",
+      "moderate": "Blossom end rot appearing on fruits",
+      "severe": "Death of growing points, severe fruit damage"
+    },
+    "treatment": {
+      "immediate": [
+        "Apply calcium nitrate as foliar spray",
+        "Use calcium chloride solution",
+        "Ensure consistent soil moisture"
+      ],
+      "long_term": [
+        "Incorporate lime or gypsum before planting",
+        "Maintain consistent irrigation",
+        "Avoid excessive nitrogen or potassium",
+        "Mulch to maintain even moisture"
+      ]
+    },
+    "fertilizer": {
+      "chemical": {
+        "name": "Calcium Nitrate (Ca(NO3)2)",
+        "dosage_per_hectare": 100,
+        "unit": "kg",
+        "application_method": "Foliar spray (1% solution) or fertigation",
+        "timing": "During fruit development, weekly applications",
+        "precautions": "Do not mix with sulfate or phosphate fertilizers."
+      },
+      "organic": {
+        "name": "Gypsum (Calcium Sulfate)",
+        "dosage_per_hectare": 500,
+        "unit": "kg",
+        "application_method": "Broadcast and incorporate",
+        "timing": "Before planting",
+        "precautions": "Does not raise pH - safe for neutral soils."
+      }
+    },
+    "prevention": [
+      "Maintain consistent soil moisture",
+      "Avoid excessive nitrogen fertilization",
+      "Add lime in acidic soils",
+      "Ensure good drainage and aeration"
+    ]
+  },
+
+  "Sulfur_Deficiency": {
+    "name": "Sulfur Deficiency",
+    "nutrient": "Sulfur (S)",
+    "description": "Sulfur deficiency causes overall yellowing similar to nitrogen deficiency, but affects younger leaves first.",
+    "visual_symptoms": [
+      "Yellowing of young leaves (unlike nitrogen)",
+      "Pale green to yellow color overall",
+      "Stunted growth",
+      "Thin, spindly stems",
+      "Delayed maturity",
+      "Similar to nitrogen deficiency but starts in new growth"
+    ],
+    "affected_crops": ["Corn", "Soybean", "Potato", "Tomato", "All plants"],
+    "severity_indicators": {
+      "mild": "Light yellowing of upper leaves",
+      "moderate": "Distinct yellowing, reduced growth",
+      "severe": "Severe chlorosis, stunted plants, poor yield"
+    },
+    "treatment": {
+      "immediate": [
+        "Apply ammonium sulfate or potassium sulfate",
+        "Use elemental sulfur",
+        "Apply gypsum (calcium sulfate)"
+      ],
+      "long_term": [
+        "Incorporate sulfur-containing fertilizers",
+        "Add organic matter with sulfur",
+        "Use sulfur-coated urea",
+        "Regular soil testing"
+      ]
+    },
+    "fertilizer": {
+      "chemical": {
+        "name": "Ammonium Sulfate (21-0-0-24S)",
+        "dosage_per_hectare": 80,
+        "unit": "kg",
+        "application_method": "Broadcast or band application",
+        "timing": "At planting and during active growth",
+        "precautions": "Acidifies soil over time. Monitor soil pH."
+      },
+      "organic": {
+        "name": "Elemental Sulfur",
+        "dosage_per_hectare": 50,
+        "unit": "kg",
+        "application_method": "Broadcast and incorporate",
+        "timing": "Fall application before planting",
+        "precautions": "Slowly available - oxidizes to sulfate in soil."
+      }
+    },
+    "prevention": [
+      "Use sulfur-containing fertilizers",
+      "Add organic matter",
+      "Avoid excessive leaching with over-irrigation",
+      "Regular soil testing for sulfur levels"
+    ]
+  },
+
+  "Zinc_Deficiency": {
+    "name": "Zinc Deficiency",
+    "nutrient": "Zinc (Zn)",
+    "description": "Zinc deficiency causes interveinal chlorosis, stunted growth, and small leaves (little leaf).",
+    "visual_symptoms": [
+      "Interveinal chlorosis on young leaves",
+      "Shortened internodes (rosetting)",
+      "Small, narrow leaves (little leaf)",
+      "Bronzing of leaves",
+      "Delayed maturity",
+      "Poor fruit set"
+    ],
+    "affected_crops": ["Corn", "Soybean", "Tomato", "Apple", "Peach"],
+    "severity_indicators": {
+      "mild": "Slight interveinal yellowing",
+      "moderate": "Distinct rosetting, smaller leaves",
+      "severe": "Severe stunting, white bud, poor yield"
+    },
+    "treatment": {
+      "immediate": [
+        "Apply zinc sulfate as foliar spray",
+        "Use zinc chelate (Zn-EDTA)",
+        "Soil application of zinc oxide"
+      ],
+      "long_term": [
+        "Incorporate zinc sulfate before planting",
+        "Use zinc-enriched fertilizers",
+        "Maintain soil pH below 7.0",
+        "Reduce phosphorus if excessive"
+      ]
+    },
+    "fertilizer": {
+      "chemical": {
+        "name": "Zinc Sulfate (ZnSO4·7H2O)",
+        "dosage_per_hectare": 15,
+        "unit": "kg",
+        "application_method": "Foliar spray (0.5% solution) or soil application",
+        "timing": "During early growth, repeat if needed",
+        "precautions": "Avoid mixing with alkaline materials. May cause phytotoxicity at high rates."
+      },
+      "organic": {
+        "name": "Zinc Oxide or Chelated Zinc",
+        "dosage_per_hectare": 10,
+        "unit": "kg",
+        "application_method": "Soil incorporation or foliar spray",
+        "timing": "Before planting or during growth",
+        "precautions": "Chelated forms more readily available."
+      }
+    },
+    "prevention": [
+      "Avoid high phosphorus levels that tie up zinc",
+      "Maintain soil pH between 6.0-7.0",
+      "Use zinc-coated fertilizers",
+      "Add composted manure with zinc"
+    ]
+  },
+
+  "Boron_Deficiency": {
+    "name": "Boron Deficiency",
+    "nutrient": "Boron (B)",
+    "description": "Boron deficiency causes death of growing points, hollow stems, and corky tissues in fruits.",
+    "visual_symptoms": [
+      "Death of terminal buds",
+      "Thick, brittle, and curled leaves",
+      "Hollow or cracked stems",
+      "Corky spots on fruits",
+      "Poor fruit and seed set",
+      "Rosetting of leaves"
+    ],
+    "affected_crops": ["Apple", "Tomato", "Cabbage", "Cauliflower", "Beet"],
+    "severity_indicators": {
+      "mild": "Slight thickening of young leaves",
+      "moderate": "Distorted growth, some bud death",
+      "severe": "Complete death of growing points, no fruiting"
+    },
+    "treatment": {
+      "immediate": [
+        "Apply borax or boric acid as foliar spray",
+        "Use solubor (sodium pentaborate)",
+        "Soil application of boron fertilizer"
+      ],
+      "long_term": [
+        "Incorporate boron before planting",
+        "Use boron-enriched fertilizers",
+        "Maintain adequate soil moisture",
+        "Regular soil testing (boron is easily leached)"
+      ]
+    },
+    "fertilizer": {
+      "chemical": {
+        "name": "Borax (11.3% B)",
+        "dosage_per_hectare": 5,
+        "unit": "kg",
+        "application_method": "Foliar spray (0.1% solution) or soil application",
+        "timing": "During flowering and fruit set",
+        "precautions": "CAUTION: Narrow margin between deficiency and toxicity. Do not exceed recommended rates."
+      },
+      "organic": {
+        "name": "Solubor or Boric Acid",
+        "dosage_per_hectare": 3,
+        "unit": "kg",
+        "application_method": "Dilute foliar spray or soil application",
+        "timing": "Pre-bloom and during fruit development",
+        "precautions": "Very narrow safe range - careful measurement required."
+      }
+    },
+    "prevention": [
+      "Regular soil testing for boron",
+      "Avoid over-liming (high pH reduces availability)",
+      "Maintain consistent soil moisture",
+      "Use boron in micro-nutrient blends"
+    ]
+  },
+
+  "Manganese_Deficiency": {
+    "name": "Manganese Deficiency",
+    "nutrient": "Manganese (Mn)",
+    "description": "Manganese deficiency causes interveinal chlorosis and necrotic spots on young leaves.",
+    "visual_symptoms": [
+      "Interveinal chlorosis on young leaves",
+      "Small necrotic spots between veins",
+      "Grayish or tanned areas",
+      "Stunted growth",
+      "Reduced yield",
+      "Affects middle to younger leaves first"
+    ],
+    "affected_crops": ["Soybean", "Tomato", "Potato", "Corn", "Wheat"],
+    "severity_indicators": {
+      "mild": "Light interveinal yellowing",
+      "moderate": "Distinct necrotic spots, chlorosis",
+      "severe": "Severe necrosis, stunted plants, poor yield"
+    },
+    "treatment": {
+      "immediate": [
+        "Apply manganese sulfate as foliar spray",
+        "Use chelated manganese (Mn-EDTA)",
+        "Soil application of manganese oxide"
+      ],
+      "long_term": [
+        "Lower soil pH if too alkaline",
+        "Incorporate manganese sulfate",
+        "Improve soil drainage",
+        "Avoid over-liming"
+      ]
+    },
+    "fertilizer": {
+      "chemical": {
+        "name": "Manganese Sulfate (MnSO4)",
+        "dosage_per_hectare": 15,
+        "unit": "kg",
+        "application_method": "Foliar spray (0.5% solution) or soil application",
+        "timing": "During active growth, repeat as needed",
+        "precautions": "Most effective as foliar spray. Avoid excessive rates."
+      },
+      "organic": {
+        "name": "Chelated Manganese (Mn-EDTA)",
+        "dosage_per_hectare": 8,
+        "unit": "kg",
+        "application_method": "Soil drench or foliar spray",
+        "timing": "Early growth stages",
+        "precautions": "More expensive but more efficient than sulfate forms."
+      }
+    },
+    "prevention": [
+      "Maintain soil pH between 5.5-6.5",
+      "Avoid excessive lime applications",
+      "Improve soil aeration and drainage",
+      "Use manganese-containing micronutrient mixes"
+    ]
+  }
+}
