@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - AgriPal</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2e7d32;
+            --accent-color: #ffd54f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .background-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            z-index: 0;
+        }
+
+        .background-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            background-image: 
+                repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(46, 125, 50, 0.1) 35px, rgba(46, 125, 50, 0.1) 70px);
+            z-index: 0;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #1b5e20, #2e7d32);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar-brand i {
+            font-size: 28px;
+            color: var(--accent-color);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .navbar-center {
+            display: flex;
+            gap: 25px;
+        }
+
+        .navbar-center a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 15px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-center a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .navbar-user {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .welcome-section {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border: 2px solid rgba(46, 125, 50, 0.2);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .welcome-section h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(46, 125, 50, 0.2);
+            animation: fadeInUp 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+            border-color: var(--primary-color);
+        }
+
+        .stat-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        .stat-value {
+            font-size: 42px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .section {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border: 2px solid rgba(46, 125, 50, 0.2);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .section-title {
+            font-size: 22px;
+            margin-bottom: 25px;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border-color: var(--primary-color);
+        }
+
+        .feature-card i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .feature-card p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .detection-list {
+            list-style: none;
+        }
+
+        .detection-item {
+            padding: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .detection-item:hover {
+            background: rgba(46, 125, 50, 0.05);
+            padding-left: 25px;
+        }
+
+        .detection-item:last-child {
+            border-bottom: none;
+        }
+
+        .detection-info h4 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .detection-meta {
+            font-size: 13px;
+            color: #666;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-high { background: #ffebee; color: #c62828; }
+        .badge-moderate { background: #fff3e0; color: #e65100; }
+        .badge-low { background: #e8f5e9; color: #2e7d32; }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 20px;
+            background: linear-gradient(135deg, #1b5e20, #2e7d32);
+            color: white;
+            text-align: center;
+            border-radius: 15px;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: 600;
+            font-size: 15px;
+            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(46, 125, 50, 0.4);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state i {
+            font-size: 60px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        /* Weekly Assessment Styles */
+        .assessment-plant-card {
+            background: rgba(255, 255, 255, 0.6);
+            border: 2px solid rgba(46, 125, 50, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .plant-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(46, 125, 50, 0.2);
+        }
+
+        .plant-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .current-status {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-improving { background: #e8f5e9; color: #2e7d32; }
+        .status-worsening { background: #ffebee; color: #c62828; }
+        .status-stable { background: #fff3e0; color: #e65100; }
+        .status-recovered { background: #e3f2fd; color: #1565c0; }
+
+        .progress-timeline {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
+        .week-node {
+            min-width: 80px;
+            text-align: center;
+            position: relative;
+        }
+
+        .week-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 16px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .week-improving { background: linear-gradient(135deg, #43a047, #66bb6a); }
+        .week-worsening { background: linear-gradient(135deg, #e53935, #ef5350); }
+        .week-stable { background: linear-gradient(135deg, #fb8c00, #ffa726); }
+        .week-recovered { background: linear-gradient(135deg, #1e88e5, #42a5f5); }
+
+        .week-date {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .recommendation-box {
+            background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+            border-left: 4px solid var(--primary-color);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .recommendation-box h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dosage-change {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .dosage-increase { background: #ffebee; color: #c62828; }
+        .dosage-decrease { background: #e8f5e9; color: #2e7d32; }
+        .dosage-maintain { background: #e3f2fd; color: #1565c0; }
+        .dosage-stop { background: #f3e5f5; color: #7b1fa2; }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .history-table.show {
+            display: table;
+        }
+
+        .history-table th {
+            background: var(--primary-color);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .history-table td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            font-size: 13px;
+        }
+
+        .history-table tr:hover {
+            background: rgba(46, 125, 50, 0.05);
+        }
+
+        .toggle-history {
+            background: linear-gradient(135deg, #1b5e20, #2e7d32);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toggle-history:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary-color);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 999;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .scroll-top:hover {
+            background: #1b5e20;
+            transform: translateY(-5px);
+        }
+
+        .scroll-top.show {
+            display: flex;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px 20px;
+            }
+
+            .navbar-center {
+                display: none;
+            }
+
+            .navbar-user {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .welcome-section h1 {
+                font-size: 1.6rem;
+            }
+
+            .stat-value {
+                font-size: 32px;
+            }
+
+            .plant-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .progress-timeline {
+                justify-content: flex-start;
+            }
+
+            .history-table {
+                font-size: 11px;
+            }
+
+            .history-table th,
+            .history-table td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-layer"></div>
+    <div class="background-pattern"></div>
+
+    <div class="content-wrapper">
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <i class="fas fa-leaf"></i>
+                AgriPal
+            </div>
+            <div class="navbar-center">
+                <a href="{{ url_for('index') }}">Home</a>
+                <a href="{{ url_for('detection_tool') }}">Detection</a>
+                <a href="{{ url_for('post_harvest_page') }}">Post-Harvest</a>
+                <a href="{{ url_for('library') }}">Library</a>
+                <a href="{{ url_for('about_us') }}">About</a>
+                <a href="{{ url_for('contact') }}">Contact</a>
+            </div>
+            <div class="navbar-user">
+                <div class="user-info">
+                    <div><strong>{{ current_user.full_name or current_user.username }}</strong></div>
+                    <div style="font-size: 12px; opacity: 0.9">{{ current_user.email }}</div>
+                </div>
+                <a href="{{ url_for('auth.logout') }}" class="btn-logout">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="welcome-section">
+                <h1>👋 Welcome back, {{ current_user.full_name or current_user.username }}!</h1>
+                <p style="color: #666; font-size: 1.1rem;">Here's what's happening with your crops today</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🔬</div>
+                    <div class="stat-value">{{ total_detections }}</div>
+                    <div class="stat-label">Total Detections</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-value">{{ total_assessments or 0 }}</div>
+                    <div class="stat-label">Weekly Trackings</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">🌿</div>
+                    <div class="stat-value">{{ current_user.farm_size or 0 }}</div>
+                    <div class="stat-label">{{ current_user.farm_size_unit or 'hectares' }}</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">⏱️</div>
+                    <div class="stat-value">
+                        {% if current_user.last_login %}
+                            {{ current_user.last_login.strftime('%d %b') }}
+                        {% else %}
+                            Today
+                        {% endif %}
+                    </div>
+                    <div class="stat-label">Last Login</div>
+                </div>
+            </div>
+
+            <!-- NEW FEATURE ANNOUNCEMENT BANNER -->
+            <div style="background: linear-gradient(135deg, #4caf50, #2e7d32); color: white; padding: 30px; border-radius: 20px; margin-bottom: 30px; box-shadow: 0 8px 25px rgba(46, 125, 50, 0.3); text-align: center; cursor: pointer; transition: all 0.3s;" onclick="window.location.href='{{ url_for('nutrition_testing') }}'">
+                <div style="font-size: 14px; font-weight: 600; background: rgba(255,255,255,0.2); display: inline-block; padding: 6px 16px; border-radius: 20px; margin-bottom: 15px;">
+                    ✨ NEW FEATURE AVAILABLE
+                </div>
+                <h2 style="font-size: 2rem; margin: 15px 0 10px 0; color: white;">🌿 Nutrition Deficiency Testing</h2>
+                <p style="font-size: 1.1rem; margin-bottom: 20px; opacity: 0.95;">Detect nutrient deficiencies in your crops and get instant fertilizer recommendations!</p>
+                <div style="display: flex; gap: 15px; justify-content: center; align-items: center; flex-wrap: wrap; margin-top: 20px;">
+                    <div style="background: rgba(255,255,255,0.2); padding: 12px 20px; border-radius: 10px;">
+                        <strong>✓</strong> 10 Nutrient Deficiencies
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 12px 20px; border-radius: 10px;">
+                        <strong>✓</strong> Instant Analysis
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 12px 20px; border-radius: 10px;">
+                        <strong>✓</strong> Custom Dosages
+                    </div>
+                </div>
+                <button style="background: white; color: #2e7d32; border: none; padding: 15px 40px; border-radius: 30px; font-size: 1.1rem; font-weight: 700; margin-top: 25px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    🚀 Try It Now - Test Your Crops!
+                </button>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">
+                    <i class="fas fa-bolt"></i> Quick Actions
+                </h2>
+                <div class="quick-actions">
+                    <a href="{{ url_for('detection_tool') }}" class="action-btn">
+                        <i class="fas fa-camera"></i> New Detection
+                    </a>
+                    <a href="{{ url_for('nutrition_testing') }}" class="action-btn" style="background: linear-gradient(135deg, #4caf50, #2e7d32);">
+                        <i class="fas fa-leaf"></i> Nutrition Test
+                    </a>
+                    <a href="{{ url_for('chatbot_page') }}" class="action-btn">
+                        <i class="fas fa-comments"></i> Ask AI Expert
+                    </a>
+                    <a href="{{ url_for('post_harvest_page') }}" class="action-btn">
+                        <i class="fas fa-warehouse"></i> Post-Harvest
+                    </a>
+                    <a href="{{ url_for('auth.profile') }}" class="action-btn">
+                        <i class="fas fa-user"></i> My Profile
+                    </a>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">
+                    <i class="fas fa-star"></i> All Features
+                </h2>
+                <div class="features-grid">
+                    <div class="feature-card" onclick="window.location.href='{{ url_for('detection_tool') }}'">
+                        <i class="fas fa-search"></i>
+                        <h3>AI Disease Detection</h3>
+                        <p>Upload a photo and get instant disease identification with 95% accuracy using advanced ML.</p>
+                    </div>
+                    <div class="feature-card" onclick="window.location.href='{{ url_for('detection_tool') }}'">
+                        <i class="fas fa-prescription-bottle"></i>
+                        <h3>Treatment Plans</h3>
+                        <p>Receive personalized treatment recommendations and step-by-step care instructions.</p>
+                    </div>
+                    <div class="feature-card" onclick="window.location.href='{{ url_for('nutrition_testing') }}'" style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); border: 3px solid #4caf50;">
+                        <i class="fas fa-leaf" style="color: #2e7d32; animation: pulse 2s infinite;"></i>
+                        <h3 style="color: #1b5e20;">🌿 Nutrition Deficiency Testing</h3>
+                        <p style="color: #2e7d32; font-weight: 500;">Detect nutrient deficiencies and get personalized fertilizer recommendations.</p>
+                        <div style="background: #4caf50; color: white; padding: 8px 16px; border-radius: 20px; display: inline-block; margin-top: 10px; font-size: 12px; font-weight: 600;">
+                            ✨ NEW FEATURE
+                        </div>
+                    </div>
+                    <div class="feature-card" onclick="window.location.href='{{ url_for('post_harvest_page') }}'">
+                        <i class="fas fa-warehouse"></i>
+                        <h3>Post-Harvest Management</h3>
+                        <p>Find nearby agro shops, markets, cold storage, and government schemes.</p>
+                    </div>
+                    <div class="feature-card" onclick="window.location.href='{{ url_for('library') }}'">
+                        <i class="fas fa-book"></i>
+                        <h3>Plant Library</h3>
+                        <p>Access comprehensive information about various plant species and diseases.</p>
+                    </div>
+                    <div class="feature-card" onclick="window.location.href='{{ url_for('chatbot_page') }}'">
+                        <i class="fas fa-comments"></i>
+                        <h3>Expert Chatbot</h3>
+                        <p>Get instant answers to your plant care questions from our AI agricultural expert.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-mobile-alt"></i>
+                        <h3>Mobile Friendly</h3>
+                        <p>Access AgriPal anywhere, anytime from your smartphone or tablet.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-globe"></i>
+                        <h3>Multi-Language</h3>
+                        <p>Available in multiple languages to serve farmers worldwide.</p>
+                    </div>
+                    <div class="feature-card" onclick="window.location.href='{{ url_for('schemes_page') }}'">
+                        <i class="fas fa-file-contract"></i>
+                        <h3>Government Schemes</h3>
+                        <p>Explore agricultural schemes, subsidies, and support programs.</p>
+                    </div>
+                </div>
+            </div>
+
+            {% if weekly_assessments %}
+            <div class="section">
+                <h2 class="section-title">
+                    <i class="fas fa-chart-line"></i> Weekly Treatment Progress
+                </h2>
+                
+                {% for plant_type, assessments in weekly_assessments.items() %}
+                <div class="assessment-plant-card">
+                    <div class="plant-header">
+                        <div class="plant-name">
+                            <i class="fas fa-seedling"></i>
+                            {{ plant_type }}
+                        </div>
+                        <div class="current-status">
+                            <span style="font-size: 14px; color: #666;">Week {{ assessments[0].week_number }}</span>
+                            <span class="badge badge-{{ assessments[0].severity_level.lower() if assessments[0].severity_level else 'low' }}">
+                                {{ assessments[0].severity_level or 'Unknown' }}
+                            </span>
+                            {% set latest_status = assessments[0].is_improving and 'improving' or (assessments[0].is_worsening and 'worsening' or (assessments[0].is_cured and 'recovered' or 'stable')) %}
+                            <span class="status-badge status-{{ latest_status }}">
+                                {% if latest_status == 'improving' %}
+                                    📈 Improving
+                                {% elif latest_status == 'worsening' %}
+                                    ⚠️ Worsening
+                                {% elif latest_status == 'recovered' %}
+                                    ✅ Recovered
+                                {% else %}
+                                    📊 Stable
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="progress-timeline">
+                        {% for assessment in assessments[::-1] %}
+                        <div class="week-node">
+                            {% set week_status = assessment.is_improving and 'improving' or (assessment.is_worsening and 'worsening' or (assessment.is_cured and 'recovered' or 'stable')) %}
+                            <div class="week-circle week-{{ week_status }}">
+                                W{{ assessment.week_number }}
+                            </div>
+                            <div class="week-date">{{ assessment.assessment_date.strftime('%d %b') }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="recommendation-box">
+                        <h4><i class="fas fa-robot"></i> Latest AI Recommendation</h4>
+                        <p style="margin-bottom: 10px;">{{ assessments[0].recommendation or 'Continue monitoring' }}</p>
+                        <div style="font-size: 13px; color: #666;">
+                            <strong>Pesticide:</strong> {{ assessments[0].pesticide_used or 'N/A' }}
+                            {% if assessments[0].recommended_dosage_change %}
+                                <span class="dosage-change dosage-{{ assessments[0].recommended_dosage_change.lower().replace(' ', '-').replace('_', '-') }}">
+                                    {{ assessments[0].recommended_dosage_change.replace('_', ' ').title() }}
+                                </span>
+                            {% endif %}
+                        </div>
+                        <div style="font-size: 13px; color: #666; margin-top: 8px;">
+                            <strong>Next assessment due:</strong> 
+                            {{ (assessments[0].assessment_date + timedelta(days=7)).strftime('%d %b %Y') }}
+                        </div>
+                    </div>
+
+                    <button class="toggle-history" onclick="toggleHistory('{{ plant_type }}')">
+                        <i class="fas fa-history"></i>
+                        <span id="toggle-text-{{ plant_type }}">View Full History</span>
+                    </button>
+
+                    <table class="history-table" id="history-{{ plant_type }}">
+                        <thead>
+                            <tr>
+                                <th>Week</th>
+                                <th>Date</th>
+                                <th>Disease</th>
+                                <th>Severity</th>
+                                <th>Status</th>
+                                <th>Treatment</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for assessment in assessments %}
+                            <tr>
+                                <td>
+                                    {% set status = assessment.is_improving and 'Improving' or (assessment.is_worsening and 'Worsening' or (assessment.is_cured and 'Recovered' or 'Stable')) %}
+                                    {% set status_class = assessment.is_improving and 'improving' or (assessment.is_worsening and 'worsening' or (assessment.is_cured and 'recovered' or 'stable')) %}
+                                    <span class="status-badge status-{{ status_class }}">
+                                        {{ status }}
+                                    </span>
+                                </td>
+                                <td>{{ assessment.pesticide_used or 'N/A' }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="section">
+                <h2 class="section-title">
+                    <i class="fas fa-history"></i> Recent Detections
+                </h2>
+                {% if recent_detections %}
+                    <ul class="detection-list">
+                        {% for detection in recent_detections %}
+                        <li class="detection-item">
+                            <div class="detection-info">
+                                <h4>{{ detection.detected_disease.replace('_', ' ') }}</h4>
+                                <div class="detection-meta">
+                                    <span><i class="fas fa-calendar"></i> {{ detection.detection_time.strftime('%d %b %Y, %I:%M %p') }}</span>
+                                    <span><i class="fas fa-bullseye"></i> {{ "%.1f"|format(detection.confidence) }}% confidence</span>
+                                    <span><i class="fas fa-leaf"></i> {{ detection.plant_type or 'Unknown' }}</span>
+                                </div>
+                            </div>
+                            <span class="badge badge-{{ detection.severity.lower() if detection.severity else 'low' }}">
+                                {{ detection.severity or 'Unknown' }}
+                            </span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-seedling"></i>
+                        <p style="font-size: 1.1rem;">No detections yet. Start by uploading a plant image!</p>
+                        <a href="{{ url_for('detection_tool') }}" class="action-btn" style="display: inline-flex; margin-top: 20px;">
+                            <i class="fas fa-plus-circle"></i> Start Detection
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="scroll-top" id="scrollTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <script>
+        function toggleHistory(plantType) {
+            const table = document.getElementById('history-' + plantType);
+            const toggleText = document.getElementById('toggle-text-' + plantType);
+            
+            if (table.classList.contains('show')) {
+                table.classList.remove('show');
+                toggleText.textContent = 'View Full History';
+            } else {
+                table.classList.add('show');
+                toggleText.textContent = 'Hide History';
+            }
+        }
+
+        window.addEventListener('scroll', function() {
+            const scrollTop = document.getElementById('scrollTop');
+            
+            if (window.scrollY > 300) {
+                scrollTop.classList.add('show');
+            } else {
+                scrollTop.classList.remove('show');
+            }
+        });
+
+        document.getElementById('scrollTop').addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+    <script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'en',
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+            includedLanguages: 'en,hi,te,ta,kn,ml,gu,pa,bn,mr,or,as'
+        }, 'google_translate_element');
+    }
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>

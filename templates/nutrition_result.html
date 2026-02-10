@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrition Analysis Result - AgriPal</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2e7d32;
+            --accent-color: #ffd54f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Beautiful Background - Same as Index */
+        .background-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            z-index: 0;
+        }
+
+        .background-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            background-image: 
+                repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(46, 125, 50, 0.1) 35px, rgba(46, 125, 50, 0.1) 70px);
+            z-index: 0;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(135deg, #1b5e20, #2e7d32);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar-brand i {
+            font-size: 28px;
+            color: var(--accent-color);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 30px;
+        }
+        
+        .result-header {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border: 2px solid rgba(46, 125, 50, 0.2);
+            margin-bottom: 30px;
+            text-align: center;
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .healthy-badge {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+            color: white;
+            border-radius: 50px;
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .deficiency-badge {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: white;
+            border-radius: 50px;
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+        }
+        
+        .image-analysis {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .image-analysis {
+                grid-template-columns: 1fr;
+            }
+            .result-container {
+                padding: 20px;
+            }
+        }
+        
+        .uploaded-image {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border: 2px solid rgba(46, 125, 50, 0.2);
+            animation: fadeInUp 0.6s ease-out;
+            animation-delay: 0.1s;
+            animation-fill-mode: both;
+        }
+        
+        .uploaded-image h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .uploaded-image img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .color-stats {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border: 2px solid rgba(46, 125, 50, 0.2);
+            animation: fadeInUp 0.6s ease-out;
+            animation-delay: 0.2s;
+            animation-fill-mode: both;
+        }
+
+        .color-stats h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+        
+        .stat-label {
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .stat-value {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .deficiency-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+            border-left: 8px solid #ff9800;
+            border: 2px solid rgba(255, 152, 0, 0.3);
+            animation: fadeInUp 0.6s ease-out;
+            animation-delay: 0.3s;
+            animation-fill-mode: both;
+        }
+
+        .deficiency-card h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .confidence-bar {
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 15px 0;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50 0%, #ff9800 50%, #f44336 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            transition: width 1s ease-out;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .symptoms-section {
+            background: linear-gradient(135deg, rgba(255, 243, 224, 0.95), rgba(255, 243, 224, 0.9));
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 2px solid #ff9800;
+        }
+        
+        .symptoms-section h3 {
+            color: #e65100;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .symptoms-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .symptoms-list li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #555;
+        }
+        
+        .symptoms-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #ff9800;
+            font-weight: bold;
+        }
+        
+        .treatment-section {
+            background: linear-gradient(135deg, rgba(232, 245, 233, 0.95), rgba(232, 245, 233, 0.9));
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 2px solid var(--primary-color);
+        }
+        
+        .treatment-section h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .treatment-section h4 {
+            color: #1b5e20;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+
+        .treatment-section ul {
+            margin-left: 20px;
+            color: #555;
+        }
+
+        .treatment-section ul li {
+            margin-bottom: 8px;
+        }
+        
+        .treatment-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            background: white;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .tab-btn.active {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
+        }
+        
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            color: #333 !important;  /* FIX: Dark text instead of white */
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* FIX: Override dosage styling for visibility */
+        .tab-content .dosage-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .tab-content .dosage-item:last-child {
+            border-bottom: none;
+        }
+        
+        .tab-content .dosage-label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #666;
+        }
+        
+        .tab-content .dosage-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #2e7d32;
+        }
+        
+        .tab-content div {
+            color: #333;
+        }
+        
+        .fertilizer-dosage {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .fertilizer-dosage h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .dosage-item {
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .dosage-item:last-child {
+            border-bottom: none;
+        }
+        
+        .dosage-label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            opacity: 0.9;
+        }
+        
+        .dosage-value {
+            font-size: 1.8em;
+            font-weight: 700;
+        }
+        
+        .prevention-tips {
+            background: linear-gradient(135deg, rgba(227, 242, 253, 0.95), rgba(227, 242, 253, 0.9));
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 2px solid #1976d2;
+        }
+        
+        .prevention-tips h3 {
+            color: #1976d2;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .prevention-tips ul {
+            margin-left: 20px;
+            color: #555;
+        }
+
+        .prevention-tips ul li {
+            margin-bottom: 8px;
+        }
+        
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1b5e20 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+
+        .recommendation-box {
+            background: rgba(232, 245, 233, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .recommendation-box strong {
+            color: var(--primary-color);
+        }
+
+        @media print {
+            .action-buttons, .navbar {
+                display: none;
+            }
+            .background-layer, .background-pattern {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Beautiful Background -->
+    <div class="background-layer"></div>
+    <div class="background-pattern"></div>
+
+    <!-- Content -->
+    <div class="content-wrapper">
+        <!-- Navbar -->
+        <div class="navbar">
+            <div class="navbar-brand">
+                <i class="fas fa-leaf"></i>
+                <span>AgriPal</span>
+            </div>
+        </div>
+
+        <div class="result-container">
+            {% if healthy %}
+            <!-- Healthy Plant Result -->
+            <div class="result-header">
+                <div class="healthy-badge">✅ Plant Appears Healthy!</div>
+                <h2>No significant nutrient deficiencies detected</h2>
+                <p>Your plant shows good color patterns and no obvious deficiency symptoms.</p>
+            </div>
+            
+            <div class="image-analysis">
+                <div class="uploaded-image">
+                    <h3>Uploaded Image</h3>
+                    <img src="{{ image_url }}" alt="Plant image">
+                </div>
+                
+                <div class="color-stats">
+                    <h3>Color Analysis</h3>
+                    {% if color_analysis %}
+                    <div class="stat-item">
+                        <span class="stat-label">Yellowing Detected:</span>
+                        <span class="stat-value">{{ color_analysis.patterns.yellowing.percentage }}%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Purple Tinting:</span>
+                        <span class="stat-value">{{ color_analysis.patterns.purpling.percentage }}%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Necrosis:</span>
+                        <span class="stat-value">{{ color_analysis.patterns.necrosis.percentage }}%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Overall Color Saturation:</span>
+                        <span class="stat-value">{{ color_analysis.patterns.pale_color.saturation_level }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="recommendation-box">
+                        <strong>Recommendation:</strong> Continue regular fertilization schedule and monitor plant health.
+                    </div>
+                </div>
+            </div>
+            
+            {% else %}
+            <!-- Deficiency Detected Result -->
+            <div class="result-header">
+                <div class="deficiency-badge">⚠️ Nutrient Deficiency Detected</div>
+                <h2>{{ diagnoses|length }} Possible Deficienc{{ 'y' if diagnoses|length == 1 else 'ies' }} Identified</h2>
+            </div>
+            
+            <div class="image-analysis">
+                <div class="uploaded-image">
+                    <h3>Uploaded Image</h3>
+                    <img src="{{ image_url }}" alt="Plant image">
+                    <p style="margin-top: 10px; color: #666;">
+                        📍 {{ location if location else 'Location not specified' }}<br>
+                        📏 {{ area }} {{ area_unit }} ({{ '%.2f'|format(hectare_conversion) }} hectares)
+                    </p>
+                </div>
+                
+                <div class="color-stats">
+                    <h3>Visual Symptom Analysis</h3>
+                    {% if color_analysis %}
+                    <div class="stat-item">
+                        <span class="stat-label">Yellowing:</span>
+                        <span class="stat-value">{{ color_analysis.patterns.yellowing.percentage }}%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Purple/Red Tinting:</span>
+                        <span class="stat-value">{{ color_analysis.patterns.purpling.percentage }}%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Marginal Chlorosis:</span>
+                        <span class="stat-value">{{ color_analysis.patterns.marginal_chlorosis.percentage }}%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Interveinal Chlorosis:</span>
+                        <span class="stat-value">{{ 'Yes' if color_analysis.patterns.interveinal_chlorosis.detected else 'No' }}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Necrosis:</span>
+                        <span class="stat-value">{{ color_analysis.patterns.necrosis.percentage }}%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Bleaching:</span>
+                        <span class="stat-value">{{ color_analysis.patterns.bleaching.percentage }}%</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Primary Deficiency (Most Likely) -->
+            <div class="deficiency-card">
+                <h2>🎯 Primary Diagnosis: {{ primary_deficiency.name }}</h2>
+                <p><strong>Nutrient:</strong> {{ primary_deficiency.nutrient }}</p>
+                
+                <div class="confidence-bar">
+                    <div class="confidence-fill" style="width: {{ primary_deficiency.confidence }}%;">
+                        {{ primary_deficiency.confidence }}% Confidence
+                    </div>
+                </div>
+                
+                <p><strong>Description:</strong> {{ primary_deficiency.description }}</p>
+                
+                <div class="symptoms-section">
+                    <h3>Detected Symptoms</h3>
+                    <ul class="symptoms-list">
+                        {% for symptom in primary_deficiency.primary_symptoms %}
+                        <li>{{ symptom }}</li>
+                        {% endfor %}
+                    </ul>
+                    <p style="margin-top: 10px;"><strong>Affected Area:</strong> {{ primary_deficiency.affected_area }}</p>
+                </div>
+                
+                {% if chemical_dosage and organic_dosage %}
+                <div class="fertilizer-dosage">
+                    <h3>💊 Recommended Fertilizer Dosage</h3>
+                    <p>Based on your land area: {{ area }} {{ area_unit }} ({{ '%.2f'|format(hectare_conversion) }} hectares)</p>
+                    
+                    <div class="treatment-tabs">
+                        <button class="tab-btn active" onclick="switchTab('chemical')">🧪 Chemical</button>
+                        <button class="tab-btn" onclick="switchTab('organic')">🌱 Organic</button>
+                    </div>
+                    
+                    <div id="chemical-tab" class="tab-content active">
+                        <div class="dosage-item">
+                            <div class="dosage-label">Fertilizer Name:</div>
+                            <div class="dosage-value">{{ chemical_dosage.name }}</div>
+                        </div>
+                        <div class="dosage-item">
+                            <div class="dosage-label">Required Amount:</div>
+                            <div class="dosage-value">{{ chemical_dosage.amount }} {{ chemical_dosage.unit }}</div>
+                        </div>
+                        <div class="dosage-item">
+                            <div class="dosage-label">Application:</div>
+                            <div>{{ primary_deficiency.fertilizer.chemical.application_method }}</div>
+                        </div>
+                        <div class="dosage-item">
+                            <div class="dosage-label">Timing:</div>
+                            <div>{{ primary_deficiency.fertilizer.chemical.timing }}</div>
+                        </div>
+                        <div class="dosage-item">
+                            <div class="dosage-label">⚠️ Precautions:</div>
+                            <div>{{ primary_deficiency.fertilizer.chemical.precautions }}</div>
+                        </div>
+                    </div>
+                    
+                    <div id="organic-tab" class="tab-content">
+                        <div class="dosage-item">
+                            <div class="dosage-label">Fertilizer Name:</div>
+                            <div class="dosage-value">{{ organic_dosage.name }}</div>
+                        </div>
+                        <div class="dosage-item">
+                            <div class="dosage-label">Required Amount:</div>
+                            <div class="dosage-value">{{ organic_dosage.amount }} {{ organic_dosage.unit }}</div>
+                        </div>
+                        <div class="dosage-item">
+                            <div class="dosage-label">Application:</div>
+                            <div>{{ primary_deficiency.fertilizer.organic.application_method }}</div>
+                        </div>
+                        <div class="dosage-item">
+                            <div class="dosage-label">Timing:</div>
+                            <div>{{ primary_deficiency.fertilizer.organic.timing }}</div>
+                        </div>
+                        <div class="dosage-item">
+                            <div class="dosage-label">⚠️ Precautions:</div>
+                            <div>{{ primary_deficiency.fertilizer.organic.precautions }}</div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="treatment-section">
+                    <h3>📋 Treatment Steps</h3>
+                    <h4>Immediate Actions:</h4>
+                    <ul>
+                        {% for step in primary_deficiency.treatment.immediate %}
+                        <li>{{ step }}</li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <h4>Long-term Management:</h4>
+                    <ul>
+                        {% for step in primary_deficiency.treatment.long_term %}
+                        <li>{{ step }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+                <div class="prevention-tips">
+                    <h3>🛡️ Prevention Tips</h3>
+                    <ul>
+                        {% for tip in primary_deficiency.prevention %}
+                        <li>{{ tip }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Other Possible Deficiencies -->
+            {% if diagnoses|length > 1 %}
+            <h2 style="color: var(--primary-color); margin: 30px 0 20px 0;">Other Possible Deficiencies</h2>
+            {% for deficiency in diagnoses[1:] %}
+            <div class="deficiency-card" style="opacity: 0.85; animation-delay: 0.{{ loop.index + 3 }}s;">
+                <h3>{{ deficiency.name }} ({{ deficiency.confidence }}% confidence)</h3>
+                <p>{{ deficiency.description }}</p>
+                <p style="margin-top: 10px;"><strong>Key Symptoms:</strong></p>
+                <ul style="margin-left: 20px; color: #555;">
+                    {% for symptom in deficiency.visual_symptoms[:3] %}
+                    <li>{{ symptom }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+            {% endif %}
+            
+            {% endif %}
+            
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a href="{{ url_for('nutrition_testing') }}" class="btn btn-primary">🔬 Test Another Plant</a>
+                <a href="{{ url_for('index') }}" class="btn btn-secondary">🏠 Back to Dashboard</a>
+                <button onclick="window.print()" class="btn btn-secondary">🖨️ Print Report</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function switchTab(tab) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tab + '-tab').classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+        
+        // Animate confidence bars on load
+        window.addEventListener('load', () => {
+            const fills = document.querySelectorAll('.confidence-fill');
+            fills.forEach(fill => {
+                const width = fill.style.width;
+                fill.style.width = '0%';
+                setTimeout(() => {
+                    fill.style.width = width;
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>

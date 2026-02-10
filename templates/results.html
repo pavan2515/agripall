@@ -1,0 +1,2007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disease Detection Results - AgriPal</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- EMBEDDED CSS - COMPLETE FROM DOCUMENT 1 -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            overflow-x: hidden;
+        }
+
+        /* Hero Background - Safari Compatible */
+        .hero-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                linear-gradient(135deg, rgba(76, 175, 80, 0.3) 0%, rgba(139, 195, 74, 0.3) 100%),
+                url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1920') center/cover;
+            background-attachment: fixed;
+        }
+
+        .hero-background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.75);
+            -webkit-backdrop-filter: blur(1px);
+            backdrop-filter: blur(1px);
+        }
+
+        .result-container {
+            position: relative;
+            min-height: 100vh;
+            padding: 40px 0;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, rgba(46, 125, 50, 0.95) 0%, rgba(85, 139, 47, 0.95) 100%);
+            padding: 40px 0;
+            margin-bottom: 40px;
+            border-radius: 0 0 30px 30px;
+            box-shadow: 0 10px 40px rgba(46, 125, 50, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=1920') center/cover;
+            opacity: 0.2;
+        }
+
+        .page-header h1 {
+            color: white;
+            font-weight: 700;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .page-header p {
+            color: rgba(255,255,255,0.95);
+            font-size: 1.1rem;
+            position: relative;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 20px;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(76, 175, 80, 0.2);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+            color: white;
+            padding: 20px 25px;
+            border: none;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .card-header i {
+            margin-right: 10px;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(241, 248, 244, 0.95) 100%);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 5px 30px rgba(76, 175, 80, 0.15);
+            border: 2px solid rgba(76, 175, 80, 0.3);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .summary-item {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+            border-left: 4px solid #4caf50;
+            transition: all 0.3s ease;
+            -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
+        }
+
+        .summary-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(76, 175, 80, 0.2);
+        }
+
+        .summary-item .label {
+            font-weight: 600;
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .summary-item .value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2e7d32;
+            margin-top: 8px;
+            display: block;
+        }
+
+        .gradcam-section {
+            background: linear-gradient(135deg, rgba(255, 248, 225, 0.95) 0%, rgba(255, 236, 179, 0.95) 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 30px 0;
+            border: 2px solid rgba(255, 193, 7, 0.4);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+
+        .gradcam-comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 25px;
+        }
+
+        .gradcam-image-wrapper {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+
+        .gradcam-image-wrapper h4 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .gradcam-image-wrapper img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+
+        .heatmap-legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .legend-item .color {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .color.red { 
+            background: linear-gradient(135deg, #f44336, #d32f2f); 
+        }
+
+        .color.yellow { 
+            background: linear-gradient(135deg, #ffc107, #ffa000); 
+        }
+
+        .color.blue { 
+            background: linear-gradient(135deg, #2196f3, #1976d2); 
+        }
+
+        .info-treatment-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .disease-info-card {
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+            border-left: 5px solid #f44336;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+
+        .disease-info-card h3 {
+            color: #d32f2f;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .severity-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .severity-low { 
+            background: linear-gradient(135deg, #c8e6c9, #a5d6a7); 
+            color: #2e7d32; 
+            border: 2px solid #66bb6a;
+        }
+
+        .severity-moderate,
+        .severity-medium { 
+            background: linear-gradient(135deg, #fff9c4, #fff59d); 
+            color: #f57f17; 
+            border: 2px solid #fbc02d;
+        }
+
+        .severity-high { 
+            background: linear-gradient(135deg, #ffccbc, #ffab91); 
+            color: #d84315; 
+            border: 2px solid #ff7043;
+        }
+
+        .severity-severe { 
+            background: linear-gradient(135deg, #ffcdd2, #ef9a9a); 
+            color: #c62828; 
+            border: 2px solid #e57373;
+        }
+
+        .severity-unknown {
+            background: linear-gradient(135deg, #e0e0e0, #bdbdbd);
+            color: #424242;
+            border: 2px solid #9e9e9e;
+        }
+
+        .treatment-info-box {
+            background: rgba(248, 249, 250, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 3px solid #4caf50;
+        }
+
+        .treatment-info-box strong {
+            color: #2e7d32;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .treatment-info-box p {
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .treatment-step {
+            background: rgba(227, 242, 253, 0.8);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 3px solid #2196f3;
+        }
+
+        .pesticide-card {
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+
+        .pesticide-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(180deg, #2196f3 0%, #1976d2 100%);
+        }
+
+        .pesticide-card.organic-card::before {
+            background: linear-gradient(180deg, #4caf50 0%, #388e3c 100%);
+        }
+
+        .pesticide-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 35px rgba(0,0,0,0.15);
+        }
+
+        .pesticide-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(240, 240, 240, 0.8);
+        }
+
+        .pesticide-header i {
+            font-size: 2rem;
+            margin-right: 15px;
+        }
+
+        .chemical-card .pesticide-header i { 
+            color: #2196f3; 
+        }
+
+        .organic-card .pesticide-header i { 
+            color: #4caf50; 
+        }
+
+        .pesticide-header h6 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 0;
+            color: #333;
+        }
+
+        .treatment-name {
+            background: linear-gradient(135deg, rgba(227, 242, 253, 0.9) 0%, rgba(187, 222, 251, 0.9) 100%);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .organic-card .treatment-name {
+            background: linear-gradient(135deg, rgba(232, 245, 233, 0.9) 0%, rgba(200, 230, 201, 0.9) 100%);
+            border-left-color: #4caf50;
+        }
+
+        .treatment-name p {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin: 0;
+            color: #1976d2;
+        }
+
+        .organic-card .treatment-name p {
+            color: #2e7d32;
+        }
+
+        .dosage-calculator {
+            background: linear-gradient(135deg, rgba(33, 150, 243, 0.95) 0%, rgba(25, 118, 210, 0.95) 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .organic-card .dosage-calculator {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.95) 0%, rgba(56, 142, 60, 0.95) 100%);
+        }
+
+        .dosage-calculator h6 {
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            opacity: 0.95;
+        }
+
+        .dosage-calculator .dosage-amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .dosage-info {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            display: block;
+            margin-top: 5px;
+        }
+
+        .video-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 243, 224, 0.9);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 152, 0, 0.3);
+        }
+
+        .video-section h6 {
+            color: #e65100;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .video-link {
+            display: inline-block;
+            margin: 5px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #ff6f00 0%, #ff9800 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(255, 111, 0, 0.3);
+        }
+
+        .video-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 111, 0, 0.4);
+            color: white;
+        }
+
+        .alert-custom {
+            border-left: 4px solid #f44336;
+            background: rgba(255, 235, 238, 0.9);
+            color: #c62828;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .alert-custom strong {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .alert-custom p {
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .leaf-analysis-section {
+            background: rgba(255, 255, 255, 0.92);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 30px 0;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.1);
+            border: 2px solid rgba(76, 175, 80, 0.2);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+
+        .leaf-analysis-section h3 {
+            color: #2e7d32;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .leaf-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .leaf-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 4px solid #4caf50;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
+        }
+
+        .leaf-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 25px rgba(76, 175, 80, 0.2);
+            border-left-width: 6px;
+        }
+
+        .leaf-card h5 {
+            color: #2e7d32;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .leaf-info-item {
+            margin: 10px 0;
+            padding: 8px 12px;
+            background: rgba(248, 249, 250, 0.9);
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .leaf-info-item strong {
+            color: #666;
+            display: block;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+        }
+
+        .confidence-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .confidence-high { 
+            background: #c8e6c9; 
+            color: #2e7d32; 
+        }
+
+        .confidence-medium { 
+            background: #fff9c4; 
+            color: #f57f17; 
+        }
+
+        .confidence-low { 
+            background: #ffccbc; 
+            color: #d84315; 
+        }
+
+        .progress {
+            background-color: rgba(233, 236, 239, 0.9);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .btn-custom {
+            background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 15px 40px;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(76, 175, 80, 0.4);
+            color: white;
+        }
+
+        .btn-custom i {
+            margin-right: 10px;
+        }
+
+        .btn-secondary-custom {
+            background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+        }
+
+        .btn-post-harvest {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+        }
+
+        .btn-chatbot {
+            background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%);
+        }
+
+        #google_translate_element {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            display: inline-block;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+
+        .resources-section {
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.1);
+            margin: 30px 0;
+            border: 2px solid rgba(33, 150, 243, 0.2);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+
+        .resources-section h3 {
+            color: #1976d2;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .step-card {
+            background: rgba(227, 242, 253, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #2196f3;
+            transition: all 0.3s ease;
+        }
+
+        .step-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 3px 15px rgba(33, 150, 243, 0.2);
+        }
+
+        .extension-link {
+            display: block;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            text-decoration: none;
+            color: #1976d2;
+            border-left: 3px solid #2196f3;
+            transition: all 0.3s ease;
+        }
+
+        .extension-link:hover {
+            transform: translateX(5px);
+            box-shadow: 0 3px 15px rgba(33, 150, 243, 0.2);
+            color: #1565c0;
+        }
+
+        /* Assessment Status Classes - Fixed for all conditional styling */
+        .assessment-card-cured {
+            border: 3px solid #4caf50;
+        }
+
+        .assessment-card-improving {
+            border: 3px solid #2196f3;
+        }
+
+        .assessment-card-worsening {
+            border: 3px solid #f44336;
+        }
+
+        .assessment-card-stable {
+            border: 3px solid #ff9800;
+        }
+
+        .assessment-header-cured {
+            background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+        }
+
+        .assessment-header-improving {
+            background: linear-gradient(135deg, #2196f3 0%, #42a5f5 100%);
+        }
+
+        .assessment-header-worsening {
+            background: linear-gradient(135deg, #f44336 0%, #e57373 100%);
+        }
+
+        .assessment-header-stable {
+            background: linear-gradient(135deg, #ff9800 0%, #ffa726 100%);
+        }
+
+        .progress-box-cured {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(129, 199, 132, 0.2));
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #4caf50;
+            height: 100%;
+        }
+
+        .progress-box-improving {
+            background: linear-gradient(135deg, rgba(33, 150, 243, 0.2), rgba(66, 165, 245, 0.2));
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #2196f3;
+            height: 100%;
+        }
+
+        .progress-box-worsening {
+            background: linear-gradient(135deg, rgba(244, 67, 54, 0.2), rgba(229, 115, 115, 0.2));
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #f44336;
+            height: 100%;
+        }
+
+        .progress-box-stable {
+            background: linear-gradient(135deg, rgba(255, 152, 0, 0.2), rgba(255, 167, 38, 0.2));
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #ff9800;
+            height: 100%;
+        }
+
+        .text-cured { 
+            color: #2e7d32; 
+        }
+
+        .text-improving { 
+            color: #1565c0; 
+        }
+
+        .text-worsening { 
+            color: #c62828; 
+        }
+
+        .text-stable { 
+            color: #e65100; 
+        }
+
+        .recommendation-box-cured {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.15), rgba(129, 199, 132, 0.15));
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #4caf50;
+        }
+
+        .recommendation-box-improving {
+            background: linear-gradient(135deg, rgba(33, 150, 243, 0.15), rgba(66, 165, 245, 0.15));
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #2196f3;
+        }
+
+        .recommendation-box-worsening {
+            background: linear-gradient(135deg, rgba(244, 67, 54, 0.15), rgba(229, 115, 115, 0.15));
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #f44336;
+        }
+
+        .recommendation-box-stable {
+            background: linear-gradient(135deg, rgba(255, 152, 0, 0.15), rgba(255, 167, 38, 0.15));
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #ff9800;
+        }
+
+        .dosage-border-decrease {
+            border-left: 5px solid #4caf50;
+        }
+
+        .dosage-border-increase {
+            border-left: 5px solid #f44336;
+        }
+
+        .dosage-border-stop {
+            border-left: 5px solid #2196f3;
+        }
+
+        .dosage-border-maintain {
+            border-left: 5px solid #ff9800;
+        }
+
+        .dosage-color-decrease { 
+            color: #2e7d32; 
+        }
+
+        .dosage-color-increase { 
+            color: #c62828; 
+        }
+
+        .dosage-color-stop { 
+            color: #1565c0; 
+        }
+
+        .dosage-color-maintain { 
+            color: #e65100; 
+        }
+
+        .comparison-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            margin-bottom: 20px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .improved { 
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); 
+        }
+
+        .worsened { 
+            background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%); 
+        }
+
+        .same { 
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); 
+        }
+
+        .progress-indicator {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .progress-arrow {
+            font-size: 40px;
+        }
+
+        .assessment-card-improved {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(129, 199, 132, 0.2));
+            border-left: 4px solid #4caf50;
+        }
+
+        .assessment-header-improved {
+            background: linear-gradient(135deg, rgba(33, 150, 243, 0.15), rgba(66, 165, 245, 0.15));
+            border: 2px solid #2196f3;
+        }
+
+        .text-color-improved { 
+            color: #1565c0; 
+        }
+
+        .text-color-worsening { 
+            color: #c62828; 
+        }
+
+        .text-color-cured { 
+            color: #2e7d32; 
+        }
+
+        .text-color-stable { 
+            color: #e65100; 
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(-20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        @media print {
+            .hero-background {
+                display: none !important;
+            }
+            
+            .btn-custom,
+            #google_translate_element,
+            .video-section,
+            .copy-btn {
+                display: none !important;
+            }
+            
+            .result-card,
+            .summary-card,
+            .disease-info-card,
+            .pesticide-card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+            
+            .page-header {
+                background: #2e7d32 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            body {
+                background: white !important;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .info-treatment-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-header h1 { 
+                font-size: 1.8rem; 
+            }
+            
+            .summary-grid { 
+                grid-template-columns: 1fr; 
+            }
+            
+            .gradcam-comparison { 
+                grid-template-columns: 1fr; 
+            }
+            
+            .leaf-grid { 
+                grid-template-columns: 1fr; 
+            }
+            
+            .btn-custom {
+                width: 100%;
+                margin: 10px 0 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-background"></div>
+
+    <div class="result-container">
+        <div class="container">
+            <!-- Professional Header -->
+            <div class="page-header">
+                <div class="text-center">
+                    <h1><i class="fas fa-microscope"></i> Plant Disease Analysis Results</h1>
+                    <p class="mt-3">Professional AI-Powered Agricultural Diagnostics</p>
+                </div>
+            </div>
+
+            <!-- Google Translate -->
+            <div class="text-center mb-4">
+                <div id="google_translate_element"></div>
+            </div>
+
+            <!-- Detection Summary -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="summary-card">
+                        <h3 class="mb-0"><i class="fas fa-chart-line"></i> Detection Summary</h3>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <span class="label">🔬 Disease Detected</span>
+                                <span class="value">{{ predicted_class|replace('_', ' ') }}</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">📊 AI Confidence</span>
+                                <span class="value">{{ "%.1f"|format(confidence) }}%</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">⚠️ Severity Level</span>
+                                <span class="value">{{ severity if severity else 'Unknown' }}</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">🍃 Leaves Analyzed</span>
+                                <span class="value">{{ total_leaves if total_leaves else 0 }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WEEKLY ASSESSMENT SECTION -->
+            {% if assessment and has_assessment %}
+            <div class="row mb-4">
+                <div class="col-12">
+                    {% if assessment.is_first_assessment %}
+                    <!-- First Week Assessment -->
+                    <div class="result-card" style="border: 3px solid #4caf50;">
+                        <div class="card-header" style="background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);">
+                            <h4 class="mb-0">
+                                <i class="fas fa-seedling"></i> 📊 Week 1 - Baseline Assessment
+                            </h4>
+                        </div>
+                        <div class="card-body p-4">
+                            <div style="background: linear-gradient(135deg, rgba(232, 245, 233, 0.95) 0%, rgba(200, 230, 201, 0.95) 100%); padding: 25px; border-radius: 15px; border-left: 5px solid #4caf50;">
+                                <h5 style="color: #2e7d32; margin-bottom: 15px;">
+                                    <i class="fas fa-info-circle"></i> Welcome to Your Weekly Treatment Tracker!
+                                </h5>
+                                <p style="color: #333; line-height: 1.7; margin-bottom: 15px;">
+                                    This is your <strong>first assessment</strong> for this plant. We'll now track your treatment progress weekly and provide intelligent recommendations to optimize pesticide usage.
+                                </p>
+                                <div style="background: white; padding: 20px; border-radius: 10px; margin-top: 15px;">
+                                    <h6 style="color: #2e7d32; margin-bottom: 15px;">
+                                        <i class="fas fa-clipboard-check"></i> What happens next:
+                                    </h6>
+                                    <ul style="color: #333; line-height: 1.8; margin-bottom: 0;">
+                                        <li>📸 <strong>Take photos weekly</strong> of the same plant</li>
+                                        <li>🔬 <strong>Upload them</strong> for analysis every 7 days</li>
+                                        <li>📊 <strong>Track progress</strong> - improving, stable, or worsening</li>
+                                        <li>💊 <strong>Get smart recommendations</strong> - increase, reduce, or change treatment</li>
+                                        <li>🌱 <strong>Optimize pesticide use</strong> based on actual results</li>
+                                    </ul>
+                                </div>
+                                <div style="background: rgba(255, 243, 224, 0.9); padding: 15px; border-radius: 10px; margin-top: 15px; border-left: 4px solid #ff9800;">
+                                    <strong style="color: #e65100;">
+                                        <i class="fas fa-calendar-alt"></i> Next Assessment Due:
+                                    </strong>
+                                    <span style="color: #333; margin-left: 10px; font-size: 1.1rem; font-weight: 600;">
+                                        {{ assessment.next_assessment_date }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <!-- Progress Assessment (Week 2+) -->
+                    <div class="result-card" style="border: 3px solid {% if assessment.is_cured %}#4caf50{% elif assessment.is_improving %}#2196f3{% elif assessment.is_worsening %}#f44336{% else %}#ff9800{% endif %};">
+                        <div class="card-header" style="background: linear-gradient(135deg, {% if assessment.is_cured %}#4caf50 0%, #66bb6a 100%{% elif assessment.is_improving %}#2196f3 0%, #42a5f5 100%{% elif assessment.is_worsening %}#f44336 0%, #e57373 100%{% else %}#ff9800 0%, #ffa726 100%{% endif %});">
+                            <h4 class="mb-0">
+                                {% if assessment.is_cured %}
+                                    <i class="fas fa-check-circle"></i> 🎉 Week {{ assessment.week_number }} - Plant Recovered!
+                                {% elif assessment.is_improving %}
+                                    <i class="fas fa-arrow-up"></i> ✅ Week {{ assessment.week_number }} - Improving!
+                                {% elif assessment.is_worsening %}
+                                    <i class="fas fa-exclamation-triangle"></i> ⚠️ Week {{ assessment.week_number }} - Action Required
+                                {% else %}
+                                    <i class="fas fa-minus-circle"></i> 📊 Week {{ assessment.week_number }} - Stable
+                                {% endif %}
+                            </h4>
+                        </div>
+                        <div class="card-body p-4">
+                            <!-- Progress Comparison -->
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <div style="background: rgba(248, 249, 250, 0.9); padding: 20px; border-radius: 12px; border-left: 4px solid #6c757d; height: 100%;">
+                                        <h6 style="color: #495057; margin-bottom: 15px;">
+                                            <i class="fas fa-history"></i> Previous Week {{ assessment.week_number - 1 }}
+                                        </h6>
+                                        <div style="font-size: 1.1rem; color: #333;">
+                                            <strong>Severity:</strong> 
+                                            <span class="severity-badge severity-{{ assessment.previous_week_severity|lower }}">
+                                                {{ assessment.previous_week_severity }}
+                                            </span>
+                                        </div>
+                                        {% if assessment.previous_treatment %}
+                                        <div style="margin-top: 10px; color: #666;">
+                                            <small><strong>Treatment:</strong> {{ assessment.previous_treatment }}</small>
+                                        </div>
+                                        {% endif %}
+                                        {% if assessment.previous_dosage %}
+                                        <div style="margin-top: 5px; color: #666;">
+                                            <small><strong>Dosage:</strong> {{ "%.2f"|format(assessment.previous_dosage) }}L</small>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="{% if assessment.is_cured %}assessment-card-cured{% elif assessment.is_improving %}assessment-card-improved{% elif assessment.is_worsening %}assessment-card-worsening{% else %}assessment-card-stable{% endif %}" style="padding: 20px; border-radius: 12px; height: 100%;">
+                                        <h6 class="{% if assessment.is_cured %}text-color-cured{% elif assessment.is_improving %}text-color-improved{% elif assessment.is_worsening %}text-color-worsening{% else %}text-color-stable{% endif %}" style="margin-bottom: 15px;">
+                                            <i class="fas fa-calendar-day"></i> Current Week {{ assessment.week_number }}
+                                        </h6>
+                                        <div style="font-size: 1.1rem; color: #333;">
+                                            <strong>Severity:</strong> 
+                                            <span class="severity-badge severity-{{ assessment.current_severity|lower }}">
+                                                {{ assessment.current_severity }}
+                                            </span>
+                                        </div>
+                                        <div class="{% if assessment.is_cured %}text-color-cured{% elif assessment.is_improving %}text-color-improved{% elif assessment.is_worsening %}text-color-worsening{% else %}text-color-stable{% endif %}" style="margin-top: 10px; font-weight: 600;">
+                                            {% if assessment.severity_change < 0 %}
+                                                <i class="fas fa-arrow-down"></i> Improved by {{ assessment.severity_change|abs }} level(s)
+                                            {% elif assessment.severity_change > 0 %}
+                                                <i class="fas fa-arrow-up"></i> Worsened by {{ assessment.severity_change }} level(s)
+                                            {% else %}
+                                                <i class="fas fa-minus"></i> No change
+                                            {% endif %}
+                                        </div>
+                                        {% if assessment.area_change_percent is not none %}
+                                        <div style="margin-top: 5px; color: #666;">
+                                            <small><strong>Affected area change:</strong> {{ "{:+.1f}".format(assessment.area_change_percent) }}%</small>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- AI Recommendation -->
+                            <div class="{% if assessment.is_cured %}assessment-header-cured{% elif assessment.is_improving %}assessment-header-improved{% elif assessment.is_worsening %}assessment-header-worsening{% else %}assessment-header-stable{% endif %}" style="padding: 25px; border-radius: 15px; margin-bottom: 20px;">
+                                <h5 class="{% if assessment.is_cured %}text-color-cured{% elif assessment.is_improving %}text-color-improved{% elif assessment.is_worsening %}text-color-worsening{% else %}text-color-stable{% endif %}" style="margin-bottom: 15px;">
+                                    <i class="fas fa-robot"></i> AI Treatment Recommendation
+                                </h5>
+                                <p style="color: #333; line-height: 1.7; font-size: 1.05rem; margin-bottom: 0;">
+                                    {{ assessment.recommendation }}
+                                </p>
+                            </div>
+
+                            <!-- Dosage Adjustment -->
+                            {% if show_dosage_change %}
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <div style="background: white; padding: 20px; border-radius: 12px; border-left: 5px solid {% if 'decrease' in assessment.dosage_recommendation %}#4caf50{% elif 'increase' in assessment.dosage_recommendation %}#f44336{% elif assessment.dosage_recommendation == 'stop' %}#2196f3{% else %}#ff9800{% endif %};">
+                                        <h6 style="color: {% if 'decrease' in assessment.dosage_recommendation %}#2e7d32{% elif 'increase' in assessment.dosage_recommendation %}#c62828{% elif assessment.dosage_recommendation == 'stop' %}#1565c0{% else %}#e65100{% endif %}; margin-bottom: 15px;">
+                                            <i class="fas fa-prescription-bottle"></i> 💊 Pesticide Dosage Adjustment
+                                        </h6>
+                                        
+                                        {% if assessment.dosage_recommendation == 'decrease_25' %}
+                                        <div style="background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(129, 199, 132, 0.1)); padding: 15px; border-radius: 10px;">
+                                            <p style="color: #2e7d32; font-weight: 600; font-size: 1.1rem; margin-bottom: 10px;">
+                                                ✅ <strong>REDUCE dosage by 25-30%</strong>
+                                            </p>
+                                            <p style="color: #333; margin-bottom: 10px;">
+                                                Your plant is responding well to treatment. Reducing pesticide usage will:
+                                            </p>
+                                            <ul style="color: #333; margin-bottom: 0;">
+                                                <li>💰 Save costs on pesticides</li>
+                                                <li>🌍 Reduce environmental impact</li>
+                                                <li>🐝 Protect beneficial insects</li>
+                                                <li>✅ Maintain treatment effectiveness</li>
+                                            </ul>
+                                            {% if assessment.previous_dosage %}
+                                            <div style="margin-top: 15px; padding: 12px; background: white; border-radius: 8px;">
+                                                <strong style="color: #2e7d32;">Recommended new dosage:</strong>
+                                                <div style="font-size: 1.3rem; color: #1b5e20; font-weight: 700; margin-top: 5px;">
+                                                    {{ "%.2f"|format(assessment.previous_dosage * 0.70) }}L
+                                                    <small style="color: #666; font-size: 0.85rem; font-weight: normal;">
+                                                        (was {{ "%.2f"|format(assessment.previous_dosage) }}L)
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        {% elif 'increase' in assessment.dosage_recommendation %}
+                                        <div style="background: linear-gradient(135deg, rgba(244, 67, 54, 0.1), rgba(229, 115, 115, 0.1)); padding: 15px; border-radius: 10px;">
+                                            <p style="color: #c62828; font-weight: 600; font-size: 1.1rem; margin-bottom: 10px;">
+                                                ⚠️ <strong>INCREASE dosage by {{ assessment.dosage_recommendation.split('_')[1] if '_' in assessment.dosage_recommendation else '30-40' }}%</strong>
+                                            </p>
+                                            <p style="color: #333; margin-bottom: 10px;">
+                                                Current treatment is not adequately controlling the disease. Immediate action needed:
+                                            </p>
+                                            <ul style="color: #333; margin-bottom: 0;">
+                                                <li>⚡ Increase pesticide dosage</li>
+                                                <li>📅 Increase application frequency</li>
+                                                <li>✂️ Remove heavily infected plant parts</li>
+                                                <li>🧹 Improve field sanitation</li>
+                                            </ul>
+                                            {% if assessment.previous_dosage %}
+                                            <div style="margin-top: 15px; padding: 12px; background: white; border-radius: 8px;">
+                                                <strong style="color: #c62828;">Recommended new dosage:</strong>
+                                                <div style="font-size: 1.3rem; color: #b71c1c; font-weight: 700; margin-top: 5px;">
+                                                    {% set increase_factor = 1.35 if 'increase_35' in assessment.dosage_recommendation else 1.40 %}
+                                                    {{ "%.2f"|format(assessment.previous_dosage * increase_factor) }}L
+                                                    <small style="color: #666; font-size: 0.85rem; font-weight: normal;">
+                                                        (was {{ "%.2f"|format(assessment.previous_dosage) }}L)
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        {% elif assessment.dosage_recommendation == 'stop' %}
+                                        <div style="background: linear-gradient(135deg, rgba(33, 150, 243, 0.1), rgba(66, 165, 245, 0.1)); padding: 15px; border-radius: 10px;">
+                                            <p style="color: #1565c0; font-weight: 600; font-size: 1.1rem; margin-bottom: 10px;">
+                                                🎉 <strong>STOP pesticide application</strong>
+                                            </p>
+                                            <p style="color: #333; margin-bottom: 10px;">
+                                                Your plant has fully recovered! Continue with preventive care only:
+                                            </p>
+                                            <ul style="color: #333; margin-bottom: 0;">
+                                                <li>💧 Maintain proper watering</li>
+                                                <li>🧹 Good field hygiene</li>
+                                                <li>📊 Weekly monitoring for symptoms</li>
+                                                <li>🌱 Balanced fertilization</li>
+                                            </ul>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <!-- Treatment Switch Recommendation -->
+                                        {% if assessment.treatment_switch %}
+                                        <div style="margin-top: 15px; padding: 15px; background: rgba(255, 243, 224, 0.9); border-radius: 10px; border-left: 4px solid #ff9800;">
+                                            <strong style="color: #e65100;">
+                                                <i class="fas fa-exchange-alt"></i> Treatment Switch Recommended:
+                                            </strong>
+                                            <p style="color: #333; margin: 10px 0 0 0;">
+                                                Consider switching to <strong>{{ assessment.treatment_switch }}</strong> treatment for better results.
+                                            </p>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <!-- Assessment History -->
+                            {% if assessment.assessment_history and assessment.assessment_history|length > 0 %}
+                            <div style="background: rgba(248, 249, 250, 0.9); padding: 20px; border-radius: 12px; margin-top: 20px;">
+                                <h6 style="color: #495057; margin-bottom: 15px;">
+                                    <i class="fas fa-chart-line"></i> Treatment Progress History
+                                </h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr style="background: rgba(76, 175, 80, 0.1);">
+                                                <th>Week</th>
+                                                <th>Date</th>
+                                                <th>Severity</th>
+                                                <th>Affected Area</th>
+                                                <th>Treatment</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for history in assessment.assessment_history %}
+                                            <tr>
+                                                <td><strong>{{ history.week }}</strong></td>
+                                                <td>{{ history.date }}</td>
+                                                <td>
+                                                    <span class="severity-badge severity-{{ history.severity|lower }}" style="font-size: 0.85rem; padding: 4px 10px;">
+                                                        {{ history.severity }}
+                                                    </span>
+                                                </td>
+                                                <td>{{ "%.1f"|format(history.affected_area) if history.affected_area else 'N/A' }}%</td>
+                                                <td style="font-size: 0.9rem;">{{ history.treatment[:30] }}...</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <!-- Next Assessment Reminder -->
+                            <div style="background: linear-gradient(135deg, rgba(255, 243, 224, 0.9) 0%, rgba(255, 224, 178, 0.9) 100%); padding: 20px; border-radius: 12px; margin-top: 20px; border: 2px solid #ff9800; text-align: center;">
+                                <h6 style="color: #e65100; margin-bottom: 10px;">
+                                    <i class="fas fa-calendar-check"></i> 📅 Next Assessment Scheduled
+                                </h6>
+                                <p style="font-size: 1.2rem; font-weight: 700; color: #e65100; margin-bottom: 5px;">
+                                    {{ assessment.next_assessment_date }}
+                                </p>
+                                <p style="color: #666; margin: 0; font-size: 0.95rem;">
+                                    Upload new photos on this date for continued progress tracking
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            <!-- END WEEKLY ASSESSMENT SECTION -->
+
+            <!-- GradCAM Visualization Section -->
+            {% if gradcam_path or original_path %}
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="gradcam-section">
+                        <h3><i class="fas fa-eye"></i> AI Visual Analysis - Where the Disease Was Detected</h3>
+                        <p style="color: #666; margin-bottom: 20px;">
+                            The heatmap below shows exactly where our AI detected disease symptoms. Red areas indicate high confidence of disease presence.
+                        </p>
+                        
+                        <div class="gradcam-comparison">
+                            {% if original_path %}
+                            <div class="gradcam-image-wrapper">
+                                <h4>Original Image</h4>
+                                <img src="{{ original_path }}" alt="Original Plant Image" class="img-fluid">
+                            </div>
+                            {% endif %}
+                            
+                            {% if gradcam_path %}
+                            <div class="gradcam-image-wrapper">
+                                <h4>Disease Detection Heatmap</h4>
+                                <img src="{{ gradcam_path }}" alt="GradCAM Heatmap" class="img-fluid">
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="heatmap-legend">
+                            <div class="legend-item">
+                                <div class="color red"></div>
+                                <span>High Disease Probability</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="color yellow"></div>
+                                <span>Medium Probability</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="color blue"></div>
+                                <span>Healthy Tissue</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Individual Leaf Analysis -->
+            {% if leaf_detections and leaf_detections|length > 0 %}
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="leaf-analysis-section">
+                        <h3><i class="fas fa-leaf"></i> Individual Leaf Analysis</h3>
+                        <p style="color: #666;">
+                            Detailed analysis of each detected leaf showing disease status and confidence levels.
+                        </p>
+                        
+                        <div class="leaf-grid">
+                            {% for leaf in leaf_detections %}
+                            <div class="leaf-card">
+                                <h5>🍃 Leaf #{{ loop.index }}</h5>
+                                
+                                {% if leaf.image_path %}
+                                <img src="{{ leaf.image_path }}" alt="Leaf {{ loop.index }}" class="img-fluid mb-3" style="border-radius: 8px;">
+                                {% endif %}
+                                
+                                <div class="leaf-info-item">
+                                    <strong>Disease Status</strong>
+                                    <span>{{ leaf.disease|replace('_', ' ') if leaf.disease else 'Unknown' }}</span>
+                                </div>
+                                
+                                <div class="leaf-info-item">
+                                    <strong>Confidence</strong>
+                                    <span class="confidence-badge {% if leaf.confidence >= 80 %}confidence-high{% elif leaf.confidence >= 50 %}confidence-medium{% else %}confidence-low{% endif %}">
+                                        {{ "%.1f"|format(leaf.confidence) }}%
+                                    </span>
+                                </div>
+                                
+                                {% if leaf.affected_area %}
+                                <div class="leaf-info-item">
+                                    <strong>Affected Area</strong>
+                                    <span>{{ "%.1f"|format(leaf.affected_area) }}%</span>
+                                </div>
+                                {% endif %}
+                                
+                                {% if leaf.severity %}
+                                <div class="leaf-info-item">
+                                    <strong>Severity</strong>
+                                    <span class="severity-badge severity-{{ leaf.severity|lower }}">
+                                        {{ leaf.severity }}
+                                    </span>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Disease Info & Treatment Grid -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="info-treatment-grid">
+                        <!-- Disease Information -->
+                        <div class="disease-info-card">
+                            <h3><i class="fas fa-virus"></i> Disease Information</h3>
+                            
+                            {% if severity %}
+                            <span class="severity-badge severity-{{ severity|lower }}">
+                                Severity: {{ severity }}
+                            </span>
+                            {% endif %}
+                            
+                            {% if description %}
+                            <div class="treatment-info-box">
+                                <strong>Description:</strong>
+                                <p>{{ description }}</p>
+                            </div>
+                            {% endif %}
+                            
+                            {% if symptoms %}
+                            <div class="treatment-info-box">
+                                <strong>Common Symptoms:</strong>
+                                <p>{{ symptoms }}</p>
+                            </div>
+                            {% endif %}
+                            
+                            {% if causes %}
+                            <div class="treatment-info-box">
+                                <strong>Causes:</strong>
+                                <p>{{ causes }}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Chemical Treatment -->
+                        {% if chemical_treatment %}
+                        <div class="pesticide-card chemical-card">
+                            <div class="pesticide-header">
+                                <i class="fas fa-flask"></i>
+                                <h6>Chemical Treatment</h6>
+                            </div>
+                            
+                            <div class="treatment-name">
+                                <p>{{ chemical_treatment.name }}</p>
+                            </div>
+                            
+                            {% if chemical_treatment.dosage %}
+                            <div class="dosage-calculator">
+                                <h6>Recommended Dosage</h6>
+                                <div class="dosage-amount">{{ chemical_treatment.dosage }}</div>
+                                <span class="dosage-info">Per hectare of affected area</span>
+                            </div>
+                            {% endif %}
+                            
+                            {% if chemical_treatment.application %}
+                            <div class="treatment-step">
+                                <strong>Application Method:</strong>
+                                <p>{{ chemical_treatment.application }}</p>
+                            </div>
+                            {% endif %}
+                            
+                            {% if chemical_treatment.precautions %}
+                            <div class="alert-custom">
+                                <strong>⚠️ Safety Precautions:</strong>
+                                <p>{{ chemical_treatment.precautions }}</p>
+                            </div>
+                            {% endif %}
+                            
+                            {% if chemical_treatment.videos %}
+                            <div class="video-section">
+                                <h6><i class="fas fa-video"></i> Tutorial Videos</h6>
+                                {% for video in chemical_treatment.videos %}
+                                <a href="{{ video.url }}" target="_blank" class="video-link">
+                                    <i class="fab fa-youtube"></i> {{ video.title }}
+                                </a>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+
+                        <!-- Organic Treatment -->
+                        {% if organic_treatment %}
+                        <div class="pesticide-card organic-card">
+                            <div class="pesticide-header">
+                                <i class="fas fa-leaf"></i>
+                                <h6>Organic Treatment</h6>
+                            </div>
+                            
+                            <div class="treatment-name">
+                                <p>{{ organic_treatment.name }}</p>
+                            </div>
+                            
+                            {% if organic_treatment.ingredients %}
+                            <div class="treatment-step">
+                                <strong>Natural Ingredients:</strong>
+                                <p>{{ organic_treatment.ingredients }}</p>
+                            </div>
+                            {% endif %}
+                            
+                            {% if organic_treatment.preparation %}
+                            <div class="treatment-step">
+                                <strong>Preparation:</strong>
+                                <p>{{ organic_treatment.preparation }}</p>
+                            </div>
+                            {% endif %}
+                            
+                            {% if organic_treatment.application %}
+                            <div class="treatment-step">
+                                <strong>Application:</strong>
+                                <p>{{ organic_treatment.application }}</p>
+                            </div>
+                            {% endif %}
+                            
+                            {% if organic_treatment.benefits %}
+                            <div class="treatment-info-box">
+                                <strong>✅ Benefits:</strong>
+                                <p>{{ organic_treatment.benefits }}</p>
+                            </div>
+                            {% endif %}
+                            
+                            {% if organic_treatment.videos %}
+                            <div class="video-section">
+                                <h6><i class="fas fa-video"></i> How-To Videos</h6>
+                                {% for video in organic_treatment.videos %}
+                                <a href="{{ video.url }}" target="_blank" class="video-link">
+                                    <i class="fab fa-youtube"></i> {{ video.title }}
+                                </a>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Resources -->
+            {% if prevention_tips or expert_contacts %}
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="resources-section">
+                        <h3><i class="fas fa-lightbulb"></i> Additional Resources</h3>
+                        
+                        {% if prevention_tips %}
+                        <div class="mb-4">
+                            <h5 style="color: #2e7d32; margin-bottom: 15px;">
+                                <i class="fas fa-shield-alt"></i> Prevention Tips
+                            </h5>
+                            {% for tip in prevention_tips %}
+                            <div class="step-card">
+                                {{ loop.index }}. {{ tip }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
+                        {% if expert_contacts %}
+                        <div>
+                            <h5 style="color: #1976d2; margin-bottom: 15px;">
+                                <i class="fas fa-users"></i> Expert Contacts
+                            </h5>
+                            {% for contact in expert_contacts %}
+                            <a href="tel:{{ contact.phone }}" class="extension-link">
+                                <i class="fas fa-phone"></i> {{ contact.name }} - {{ contact.role }}
+                                <br><small>{{ contact.phone }}</small>
+                            </a>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Action Buttons -->
+            <div class="row mt-5">
+                <div class="col-12 text-center">
+                    <a href="/" class="btn btn-custom me-2 mb-2">
+                        <i class="fas fa-upload"></i> Analyze Another Image
+                    </a>
+                    <a href="/post-harvest" class="btn btn-custom btn-post-harvest me-2 mb-2">
+                        <i class="fas fa-box"></i> Post-Harvest Disease Detection
+                    </a>
+                    <a href="/chatbot" class="btn btn-custom btn-chatbot mb-2">
+                        <i class="fas fa-comments"></i> Ask AgriPal Assistant
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Google Translate Script -->
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- EMBEDDED JAVASCRIPT - COMPLETE FROM DOCUMENT 4 -->
+    <script>
+        // ===================================
+        // DISEASE DETECTION RESULTS PAGE
+        // Complete Error-Free JavaScript Code
+        // ===================================
+
+        // Google Translate Initialization
+        function googleTranslateElementInit() {
+            try {
+                new google.translate.TranslateElement(
+                    {
+                        pageLanguage: 'en',
+                        includedLanguages: 'en,hi,kn,ta,te,ml,bn,gu,mr,pa',
+                        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                        autoDisplay: false
+                    },
+                    'google_translate_element'
+                );
+            } catch (error) {
+                console.error('Google Translate initialization error:', error);
+            }
+        }
+
+        // DOM Ready Handler
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // Initialize all components
+            initImageErrorHandling();
+            initSmoothScrolling();
+            initTooltips();
+            initAnimations();
+            initPrintButton();
+            initCopyToClipboard();
+            
+            console.log('Result page initialized successfully');
+        });
+
+        // ===================================
+        // IMAGE ERROR HANDLING
+        // ===================================
+        function initImageErrorHandling() {
+            const images = document.querySelectorAll('img');
+            
+            images.forEach(function(img) {
+                // Skip if already has error handler
+                if (img.dataset.errorHandled) return;
+                
+                img.addEventListener('error', function() {
+                    if (!this.dataset.errorHandled) {
+                        this.dataset.errorHandled = 'true';
+                        
+                        // Determine placeholder based on image type
+                        let placeholderText = 'Image Not Available';
+                        
+                        if (this.alt.includes('GradCAM') || this.alt.includes('Heatmap')) {
+                            placeholderText = 'Heatmap Not Generated';
+                        } else if (this.alt.includes('Original')) {
+                            placeholderText = 'Original Image Not Found';
+                        } else if (this.alt.includes('Leaf')) {
+                            placeholderText = 'Leaf Image Not Found';
+                        }
+                        
+                        this.src = 'https://via.placeholder.com/400x300?text=' + encodeURIComponent(placeholderText);
+                        this.style.opacity = '0.6';
+                    }
+                });
+            });
+        }
+
+        // ===================================
+        // SMOOTH SCROLLING
+        // ===================================
+        function initSmoothScrolling() {
+            const links = document.querySelectorAll('a[href^="#"]');
+            
+            links.forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    
+                    // Check if it's a valid anchor
+                    if (href !== '#' && href.length > 1) {
+                        const target = document.querySelector(href);
+                        
+                        if (target) {
+                            e.preventDefault();
+                            
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                            
+                            // Update URL without jumping
+                            if (history.pushState) {
+                                history.pushState(null, null, href);
+                            }
+                        }
+                    }
+                });
+            });
+        }
+
+        // ===================================
+        // BOOTSTRAP TOOLTIPS
+        // ===================================
+        function initTooltips() {
+            // Check if Bootstrap is loaded
+            if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
+                const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+                tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+                    new bootstrap.Tooltip(tooltipTriggerEl);
+                });
+            }
+        }
+
+        // ===================================
+        // ANIMATIONS
+        // ===================================
+        function initAnimations() {
+            // Intersection Observer for fade-in animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe all cards
+            const cards = document.querySelectorAll('.result-card, .summary-card, .leaf-card, .disease-info-card, .pesticide-card');
+            cards.forEach(function(card) {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(card);
+            });
+            
+            // Add visible class for animation
+            const style = document.createElement('style');
+            style.textContent = `
+                .fade-in-visible {
+                    opacity: 1 !important;
+                    transform: translateY(0) !important;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // ===================================
+        // PRINT FUNCTIONALITY
+        // ===================================
+        function initPrintButton() {
+            // Create print button if it doesn't exist
+            let printBtn = document.getElementById('printResultsBtn');
+            
+            if (!printBtn) {
+                printBtn = document.createElement('button');
+                printBtn.id = 'printResultsBtn';
+                printBtn.className = 'btn btn-custom btn-secondary-custom mb-3';
+                printBtn.innerHTML = '<i class="fas fa-print"></i> Print Results';
+                printBtn.style.display = 'none'; // Hidden by default
+                
+                // Find action buttons container
+                const actionButtons = document.querySelector('.row.mt-5 .col-12.text-center');
+                if (actionButtons) {
+                    actionButtons.insertBefore(printBtn, actionButtons.firstChild);
+                    printBtn.style.display = 'inline-block';
+                    printBtn.style.marginRight = '10px';
+                }
+            }
+            
+            if (printBtn) {
+                printBtn.addEventListener('click', function() {
+                    window.print();
+                });
+            }
+        }
+
+        // ===================================
+        // COPY TO CLIPBOARD
+        // ===================================
+        function initCopyToClipboard() {
+            // Add copy buttons to treatment sections
+            const treatmentSections = document.querySelectorAll('.treatment-info-box, .treatment-step');
+            
+            treatmentSections.forEach(function(section, index) {
+                if (!section.querySelector('.copy-btn')) {
+                    const copyBtn = document.createElement('button');
+                    copyBtn.className = 'copy-btn btn btn-sm btn-outline-secondary';
+                    copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
+                    copyBtn.title = 'Copy to clipboard';
+                    copyBtn.style.cssText = 'position: absolute; top: 10px; right: 10px; opacity: 0; transition: opacity 0.3s;';
+                    
+                    // Make section relative positioned
+                    section.style.position = 'relative';
+                    
+                    // Show button on hover
+                    section.addEventListener('mouseenter', function() {
+                        copyBtn.style.opacity = '1';
+                    });
+                    
+                    section.addEventListener('mouseleave', function() {
+                        copyBtn.style.opacity = '0';
+                    });
+                    
+                    // Copy functionality
+                    copyBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        
+                        const text = section.textContent.trim();
+                        
+                        if (navigator.clipboard && navigator.clipboard.writeText) {
+                            navigator.clipboard.writeText(text).then(function() {
+                                showCopyFeedback(copyBtn);
+                            }).catch(function(err) {
+                                console.error('Copy failed:', err);
+                                fallbackCopy(text, copyBtn);
+                            });
+                        } else {
+                            fallbackCopy(text, copyBtn);
+                        }
+                    });
+                    
+                    section.appendChild(copyBtn);
+                }
+            });
+        }
+
+        function showCopyFeedback(button) {
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-check"></i>';
+            button.classList.add('btn-success');
+            button.classList.remove('btn-outline-secondary');
+            
+            setTimeout(function() {
+                button.innerHTML = originalHTML;
+                button.classList.remove('btn-success');
+                button.classList.add('btn-outline-secondary');
+            }, 2000);
+        }
+
+        function fallbackCopy(text, button) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                showCopyFeedback(button);
+            } catch (err) {
+                console.error('Fallback copy failed:', err);
+                alert('Failed to copy to clipboard');
+            }
+            
+            document.body.removeChild(textarea);
+        }
+
+        // ===================================
+        // DOSAGE CALCULATOR
+        // ===================================
+        function calculateDosage(baseRate, area, areaUnit) {
+            // Convert area to hectares
+            let areaInHectares = area;
+            
+            if (areaUnit === 'acres') {
+                areaInHectares = area * 0.404686;
+            } else if (areaUnit === 'sqm') {
+                areaInHectares = area / 10000;
+            } else if (areaUnit === 'sqft') {
+                areaInHectares = area / 107639;
+            }
+            
+            return baseRate * areaInHectares;
+        }
+
+        // ===================================
+        // VIDEO LINK HANDLERS
+        // ===================================
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('video-link') || e.target.closest('.video-link')) {
+                const link = e.target.classList.contains('video-link') ? e.target : e.target.closest('.video-link');
+                
+                // Track video click (if analytics is set up)
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'video_link_click', {
+                        'event_category': 'engagement',
+                        'event_label': link.textContent.trim()
+                    });
+                }
+            }
+        });
+
+        // ===================================
+        // LEAF IMAGE MODAL
+        // ===================================
+        function initLeafImageModal() {
+            const leafImages = document.querySelectorAll('.leaf-card img');
+            
+            leafImages.forEach(function(img) {
+                img.style.cursor = 'pointer';
+                
+                img.addEventListener('click', function() {
+                    openImageModal(this.src, this.alt);
+                });
+            });
+        }
+
+        function openImageModal(src, alt) {
+            // Create modal if it doesn't exist
+            let modal = document.getElementById('imageModal');
+            
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'imageModal';
+                modal.className = 'modal fade';
+                modal.innerHTML = `
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="imageModalLabel">${alt}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body text-center">
+                                <img src="${src}" alt="${alt}" style="max-width: 100%; height: auto;">
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            } else {
+                modal.querySelector('.modal-title').textContent = alt;
+                modal.querySelector('.modal-body img').src = src;
+                modal.querySelector('.modal-body img').alt = alt;
+            }
+            
+            // Show modal
+            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                const modalInstance = new bootstrap.Modal(modal);
+                modalInstance.show();
+            }
+        }
+
+        // Initialize leaf image modal after DOM is ready
+        setTimeout(initLeafImageModal, 500);
+
+        // ===================================
+        // UTILITY FUNCTIONS
+        // ===================================
+        function formatNumber(num, decimals = 1) {
+            return Number(num).toFixed(decimals);
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = function() {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // ===================================
+        // ERROR HANDLING
+        // ===================================
+        window.addEventListener('error', function(e) {
+            console.error('JavaScript error:', e.error);
+            // Prevent page crash
+            e.preventDefault();
+        });
+
+        // ===================================
+        // PERFORMANCE MONITORING
+        // ===================================
+        if ('PerformanceObserver' in window) {
+            try {
+                const perfObserver = new PerformanceObserver(function(list) {
+                    for (const entry of list.getEntries()) {
+                        if (entry.duration > 100) {
+                            console.warn('Long task detected:', entry.name, entry.duration + 'ms');
+                        }
+                    }
+                });
+                
+                perfObserver.observe({ entryTypes: ['measure', 'navigation'] });
+            } catch (e) {
+                console.log('Performance monitoring not available');
+            }
+        }
+
+        // ===================================
+        // EXPORT FOR DEBUGGING
+        // ===================================
+        window.resultPageUtils = {
+            calculateDosage: calculateDosage,
+            formatNumber: formatNumber,
+            openImageModal: openImageModal,
+            initAnimations: initAnimations
+        };
+
+        console.log('✅ Result page JavaScript loaded successfully');
+    </script>
+</body>
+</html>
